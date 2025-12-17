@@ -40,6 +40,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
       duration: "30 min",
       difficulty: "Moderate",
       description: "Build strength during your high-energy phase",
+      recommendedFor: ["pcos"] // Resistance training is good for PCOS insulin sensitivity
     },
     {
       id: 3,
@@ -48,6 +49,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
       duration: "10 min",
       difficulty: "Easy",
       description: "Strengthen pelvic floor muscles for better health",
+      recommendedFor: ["endometriosis", "postpartum"]
     },
     {
       id: 4,
@@ -56,7 +58,17 @@ export default function HealthTools({ user }: HealthToolsProps) {
       duration: "20 min",
       difficulty: "Hard",
       description: "High-intensity interval training during peak energy",
+      recommendedFor: ["pcos"] // HIIT can be good for PCOS weight management (with caution)
     },
+    {
+      id: 5,
+      name: "Low Impact Cardio (Walking/Swimming)",
+      phase: "luteal",
+      duration: "45 min",
+      difficulty: "Easy",
+      description: "Reduce stress cortisol levels while staying active",
+      recommendedFor: ["pcos", "pmdd"]
+    }
   ]
 
   const meals = [
@@ -73,6 +85,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
       phase: "all",
       prep: "5 min",
       description: "Berries, turmeric, ginger, and almond milk",
+      recommendedFor: ["endometriosis", "pcos"] // Anti-inflammatory is key for both
     },
     {
       id: 3,
@@ -88,6 +101,22 @@ export default function HealthTools({ user }: HealthToolsProps) {
       prep: "12 min",
       description: "Grilled chicken, sweet potato, and broccoli",
     },
+    {
+      id: 5,
+      name: "Low-GI Breakfast Bowl",
+      phase: "all",
+      prep: "10 min",
+      description: "Oats, chia seeds, berries (Low Glycemic Index for Insulin Sensitivity)",
+      recommendedFor: ["pcos"]
+    },
+    {
+      id: 6,
+      name: "Magnesium-Rich Dinner",
+      phase: "luteal",
+      prep: "20 min",
+      description: "Salmon, spinach, brown rice to reduce cramping and mood swings",
+      recommendedFor: ["pmdd", "cramps"]
+    }
   ]
 
   return (
@@ -172,49 +201,71 @@ export default function HealthTools({ user }: HealthToolsProps) {
       {/* Exercise Tab */}
       {activeTab === "exercise" && (
         <div className="space-y-4">
-          {exercises.map((exercise) => (
-            <div
-              key={exercise.id}
-              className="bg-white border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-smooth"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-semibold text-foreground">{exercise.name}</h3>
-                <span className="text-2xl">🏃</span>
+          {exercises.map((exercise) => {
+            const userConditions = Array.isArray(user?.conditions) ? user.conditions.map((c: string) => c.toLowerCase()) : []
+            // @ts-ignore
+            const isRecommended = exercise.recommendedFor?.some(c => userConditions.includes(c))
+
+            return (
+              <div
+                key={exercise.id}
+                className={`bg-white border ${isRecommended ? 'border-primary border-2 shadow-md' : 'border-border'} rounded-lg p-6 shadow-sm hover:shadow-md transition-smooth relative overflow-hidden`}
+              >
+                {isRecommended && (
+                  <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg uppercase tracking-wider">
+                    Recommended for you
+                  </div>
+                )}
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-lg font-semibold text-foreground">{exercise.name}</h3>
+                  <span className="text-2xl">🏃</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">{exercise.description}</p>
+                <div className="flex gap-4 text-sm flex-wrap">
+                  <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">{exercise.duration}</span>
+                  <span className="bg-accent-warm/10 text-accent-warm px-3 py-1 rounded-full">{exercise.difficulty}</span>
+                  <span className="bg-primary-light/10 text-primary-light px-3 py-1 rounded-full capitalize">
+                    {exercise.phase === "all" ? "All Phases" : exercise.phase}
+                  </span>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-3">{exercise.description}</p>
-              <div className="flex gap-4 text-sm flex-wrap">
-                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">{exercise.duration}</span>
-                <span className="bg-accent-warm/10 text-accent-warm px-3 py-1 rounded-full">{exercise.difficulty}</span>
-                <span className="bg-primary-light/10 text-primary-light px-3 py-1 rounded-full capitalize">
-                  {exercise.phase === "all" ? "All Phases" : exercise.phase}
-                </span>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
       {/* Nutrition Tab */}
       {activeTab === "nutrition" && (
         <div className="space-y-4">
-          {meals.map((meal) => (
-            <div
-              key={meal.id}
-              className="bg-white border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-smooth"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-semibold text-foreground">{meal.name}</h3>
-                <span className="text-2xl">🥗</span>
+          {meals.map((meal) => {
+            const userConditions = Array.isArray(user?.conditions) ? user.conditions.map((c: string) => c.toLowerCase()) : []
+            // @ts-ignore
+            const isRecommended = meal.recommendedFor?.some(c => userConditions.includes(c))
+
+            return (
+              <div
+                key={meal.id}
+                className={`bg-white border ${isRecommended ? 'border-accent-purple border-2 shadow-md' : 'border-border'} rounded-lg p-6 shadow-sm hover:shadow-md transition-smooth relative overflow-hidden`}
+              >
+                {isRecommended && (
+                  <div className="absolute top-0 right-0 bg-accent-purple text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg uppercase tracking-wider">
+                    Best for your condition
+                  </div>
+                )}
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-lg font-semibold text-foreground">{meal.name}</h3>
+                  <span className="text-2xl">🥗</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">{meal.description}</p>
+                <div className="flex gap-4 text-sm flex-wrap">
+                  <span className="bg-primary-light/10 text-primary-light px-3 py-1 rounded-full">{meal.prep}</span>
+                  <span className="bg-accent-warm/10 text-accent-warm px-3 py-1 rounded-full capitalize">
+                    {meal.phase === "all" ? "All Phases" : meal.phase}
+                  </span>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-3">{meal.description}</p>
-              <div className="flex gap-4 text-sm flex-wrap">
-                <span className="bg-primary-light/10 text-primary-light px-3 py-1 rounded-full">{meal.prep}</span>
-                <span className="bg-accent-warm/10 text-accent-warm px-3 py-1 rounded-full capitalize">
-                  {meal.phase === "all" ? "All Phases" : meal.phase}
-                </span>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
