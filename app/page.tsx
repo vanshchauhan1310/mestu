@@ -99,7 +99,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="pb-20 safe-area-inset-bottom">{renderPage()}</div>
+      <div className="pb-32 safe-area-inset-bottom">{renderPage()}</div>
       <BottomNavigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
     </main>
   )
