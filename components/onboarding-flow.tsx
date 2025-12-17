@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { doc, setDoc } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { ArrowRight, ArrowLeft, Check, ClipboardList, Target, AlertCircle, Heart, Activity, Calendar, Droplets, Smile, Frown, Users, Info, ChevronRight, Zap, HeartPulse, CheckCircle, BatteryLow, Theater, Expand, Brain, CloudFog, Sparkles, ShieldCheck } from "lucide-react"
@@ -26,11 +26,12 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [userData, setUserData] = useState({
     // Basics
     name: "",
-    age: "",
+    dob: "", // Changed from age to dob
+    age: "", // Will be calculated
     height: "",
     weight: "",
     bmi: "",
-    country: "India", // Default
+    country: "India",
 
     // Cycle History
     firstPeriodAge: "",
@@ -38,27 +39,27 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     periodDuration: "5",
     flowIntensity: "moderate",
     lastPeriodDate: "",
-    periodRegularity: "somewhat", // regular, somewhat, very, absent
+    periodRegularity: "somewhat",
     missedPeriodFreq: "rarely",
 
     // PCOS & Health
-    pcosStatus: "unsure", // yes, no, unsure
+    pcosStatus: "unsure",
     diagnosisDate: "",
     coMorbidities: [] as string[],
 
     // Standard
-    conditions: [] as string[], // Keep for compatibility or syncing
+    conditions: [] as string[],
     symptoms: [] as string[],
     painLevel: "5",
     goals: [] as string[],
 
-    // Lifestyle (Future steps)
+    // Lifestyle
     activityLevel: "moderate",
     sleepHours: "7-8",
     dietType: "mixed",
     stressLevel: "medium",
 
-    // Repro (Future)
+    // Repro
     tryingToConceive: false
   })
 
@@ -72,8 +73,26 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     return ""
   }
 
-  // ... (handleToggle functions would be here, I'll assume they persist or I'll re-add if I overwrite them. 
-  // Wait, I am overwriting the whole top section. I MUST include handle functions.)
+  // Helper to calculate Age
+  const calculateAge = (dob: string) => {
+    if (!dob) return ""
+    const birthDate = new Date(dob)
+    const today = new Date()
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--
+    }
+    return age.toString()
+  }
+
+  // Effect to update age whenever DOB changes
+  useEffect(() => {
+    if (userData.dob) {
+      setUserData(prev => ({ ...prev, age: calculateAge(prev.dob) }))
+    }
+  }, [userData.dob])
+
 
   const handleConditionToggle = (conditionId: string) => {
     setUserData((prev) => ({
@@ -93,7 +112,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     }))
   }
 
-  // Keep existing toggle handlers
   const handleSymptomToggle = (symptomLabel: string) => {
     setUserData((prev) => ({
       ...prev,
@@ -111,28 +129,42 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   }
 
   const handleNext = async () => {
-    // Validation Step 1
+    // Validation Step 1: Identity (Mandatory)
     if (step === 1) {
-      if (!userData.name.trim() || !userData.age.trim()) {
-        alert("Please enter your name and age.")
+      if (!userData.name.trim() || !userData.dob || !userData.height || !userData.weight) {
+        alert("All fields are mandatory. Please complete your profile.")
         return
       }
     }
-    // Validation Step 2
-    if (step === 2 && !userData.lastPeriodDate) {
-      alert("Please enter your last period date (estimate if needed).")
+
+    // Validation Step 2: Cycle (Mandatory)
+    if (step === 2) {
+      if (!userData.lastPeriodDate || !userData.cycleLength) {
+        alert("Please provide your last period date and cycle length.")
+        return
+      }
+    }
+
+    // Validation Step 3: PCOS/Conditions (Mandatory selection)
+    if (step === 3 && userData.pcosStatus === "") {
+      alert("Please select your PCOS status.")
       return
     }
 
-    if (step < 7) { // Increased steps
+    if (step < 7) {
       setStep(step + 1)
     } else {
-      // Submit logic (will be same as before, just more data)
       try {
         const user = auth.currentUser
         if (user) {
+          // Final Calculation Check
+          const finalAge = calculateAge(userData.dob)
+
           await setDoc(doc(db, "users", user.uid), {
             ...userData,
+            age: finalAge, // Ensure explicit age save
+            bmi: userData.bmi || updateBMI(userData.height, userData.weight),
+            // We storedob as well
             isOnboardingComplete: true,
             createdAt: new Date().toISOString(),
             email: user.email,
@@ -181,10 +213,9 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         {/* Content Area */}
         <div className="p-8 min-h-[400px] flex flex-col justify-center">
 
-          {/* Step -1 & 0 (Language/Welcome) - KEEP SAME */}
+          {/* Step -1 & 0 (Language/Welcome) */}
           {step === -1 && (
             <div className="text-center">
-              {/* Keep Language Logic same */}
               <h1 className="text-3xl font-bold text-gray-900 mb-8">Select Language / भाषा चुनें</h1>
               <div className="grid gap-4 max-w-md mx-auto">
                 <button onClick={() => { setLanguage('en'); setStep(0) }} className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 hover:border-primary hover:bg-primary/5 transition-all group">
@@ -222,14 +253,18 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           {step === 1 && (
             <div className="space-y-6 max-w-md mx-auto w-full">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile & Basics</h2>
+              <div className="bg-yellow-50 p-3 rounded-lg text-xs text-yellow-800 mb-4 border border-yellow-100">
+                <AlertCircle className="w-4 h-4 inline mr-1" />
+                All fields are mandatory for accurate health tracking.
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                   <input type="text" value={userData.name} onChange={(e) => setUserData({ ...userData, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none" placeholder="Your Name" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
-                  <input type="number" value={userData.age} onChange={(e) => setUserData({ ...userData, age: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none" placeholder="Age" />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth *</label>
+                  <input type="date" value={userData.dob} onChange={(e) => setUserData({ ...userData, dob: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
@@ -241,7 +276,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Height (cm)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Height (cm) *</label>
                   <input type="number" value={userData.height}
                     onChange={(e) => {
                       const bmi = updateBMI(e.target.value, userData.weight)
@@ -250,7 +285,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none" placeholder="160" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg) *</label>
                   <input type="number" value={userData.weight}
                     onChange={(e) => {
                       const bmi = updateBMI(userData.height, e.target.value)
@@ -262,7 +297,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               {userData.bmi && (
                 <div className="bg-blue-50 p-4 rounded-xl text-sm text-blue-800 flex items-center gap-2">
                   <Activity className="w-4 h-4" />
-                  <span>Your BMI is <strong>{userData.bmi}</strong>. This helps us tailor metabolic tips!</span>
+                  <span>Your BMI is <strong>{userData.bmi}</strong>. (Age: {userData.age})</span>
                 </div>
               )}
             </div>
@@ -272,6 +307,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           {step === 2 && (
             <div className="space-y-6 max-w-md mx-auto w-full">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Menstrual History</h2>
+              <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mb-2">
+                <Info className="w-4 h-4 inline mr-1" />
+                We need at least 3 months of history for accurate predictions. Please estimate your averages carefully.
+              </div>
 
               <div className="space-y-4">
                 <div>
@@ -295,11 +334,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Last Period (LMP)</label>
+                    <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Last Period (LMP) *</label>
                     <input type="date" value={userData.lastPeriodDate} onChange={(e) => setUserData({ ...userData, lastPeriodDate: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Cycle Length (Days)</label>
+                    <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Avg Cycle Length (Days) *</label>
                     <input type="number" value={userData.cycleLength} onChange={(e) => setUserData({ ...userData, cycleLength: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none" placeholder="28" />
                   </div>
                 </div>
@@ -314,13 +353,12 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-lg font-medium text-gray-800 mb-3">Have you been diagnosed with PCOS?</label>
+                  <label className="block text-lg font-medium text-gray-800 mb-3">Have you been diagnosed with PCOS? *</label>
                   <div className="grid grid-cols-3 gap-3">
                     {[{ val: "yes", label: "Yes" }, { val: "no", label: "No" }, { val: "unsure", label: "Not Sure" }].map(opt => (
                       <button key={opt.val}
                         onClick={() => {
                           setUserData({ ...userData, pcosStatus: opt.val })
-                          // Auto-add PCOS to conditions if Yes
                           if (opt.val === 'yes') {
                             if (!userData.conditions.includes('pcos')) handleConditionToggle('pcos')
                           }
@@ -516,5 +554,3 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     </div>
   )
 }
-
-

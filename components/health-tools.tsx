@@ -133,53 +133,26 @@ export default function HealthTools({ user }: HealthToolsProps) {
         </div>
       )}
 
-      {/* Tab Navigation */}
-      <div className="flex gap-4 mb-8 border-b border-border overflow-x-auto">
-        <button
-          onClick={() => setActiveTab("wellness")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "wellness"
-            ? "border-primary text-primary"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-        >
-          💪 {t('wellness')}
-        </button>
-        <button
-          onClick={() => setActiveTab("exercise")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "exercise"
-            ? "border-primary text-primary"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-        >
-          🏃 {t('exercise')}
-        </button>
-        <button
-          onClick={() => setActiveTab("nutrition")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "nutrition"
-            ? "border-primary text-primary"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-        >
-          🥗 {t('nutrition')}
-        </button>
-        <button
-          onClick={() => setActiveTab("stress")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "stress"
-            ? "border-primary text-primary"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-        >
-          🧘 {t('stressRelief')}
-        </button>
-        <button
-          onClick={() => setActiveTab("ai_check")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "ai_check"
-            ? "border-accent-purple text-accent-purple"
-            : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-        >
-          🤖 {t('aiCheck')}
-        </button>
+      {/* NEW Tab Navigation (Segmented Control) */}
+      <div className="flex bg-slate-100/80 p-1.5 rounded-2xl mb-8 overflow-x-auto no-scrollbar">
+        {[
+          { id: "wellness", label: "💪 Wellness", color: "text-blue-600" },
+          { id: "exercise", label: "🏃 Exercise", color: "text-green-600" },
+          { id: "nutrition", label: "🥗 Nutrition", color: "text-orange-600" },
+          { id: "stress", label: "🧘 Stress Relief", color: "text-purple-600" },
+          { id: "ai_check", label: "🤖 AI Check", color: "text-indigo-600" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 min-w-[120px] px-4 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap ${activeTab === tab.id
+                ? "bg-white text-slate-900 shadow-sm ring-1 ring-black/5"
+                : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+              }`}
+          >
+            <span className={activeTab === tab.id ? tab.color : ""}>{tab.label.split(" ")[0]}</span> {tab.label.split(" ").slice(1).join(" ")}
+          </button>
+        ))}
       </div>
 
       {/* Wellness Tab */}

@@ -192,34 +192,67 @@ export default function Profile({ user, setUser }: ProfileProps) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Header Card */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-6">
-          {!isEditing ? (
-            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full transition-all text-sm font-bold">
-              <Pencil className="w-4 h-4" /> Edit Profile
-            </button>
-          ) : (
-            <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-full transition-all text-sm font-bold">
-              <X className="w-4 h-4" /> Cancel
-            </button>
-          )}
-        </div>
+      {/* NEW Header Card (Tier 1 Design) */}
+      <div className="bg-gradient-to-br from-white to-purple-50/50 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-purple-100/20 border border-white/60 mb-8 relative overflow-hidden backdrop-blur-xl">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 
-        <div className="flex items-center gap-6">
-          <div className="w-24 h-24 bg-gradient-to-br from-primary to-purple-400 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-            {formData.name.charAt(0)}
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
+          {/* Avatar */}
+          <div className="relative group">
+            <div className="w-28 h-28 md:w-32 md:h-32 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-2xl shadow-indigo-500/30 border-4 border-white ring-1 ring-purple-100">
+              {formData.name.charAt(0).toUpperCase()}
+            </div>
+            <div className="absolute bottom-1 right-1 bg-green-500 w-5 h-5 rounded-full border-4 border-white"></div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-1">{formData.name || "User"}</h1>
-            <p className="text-gray-500 flex items-center gap-2">
-              {formData.age} years • {formData.country} • BMI {formData.bmi || "--"}
-            </p>
-            <div className="flex flex-wrap gap-2 mt-3">
+
+          {/* User Info */}
+          <div className="text-center md:text-left flex-1 min-w-0">
+            <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-4">
+              <div>
+                <h1 className="text-2xl md:text-4xl font-black text-slate-800 tracking-tight mb-2 truncate max-w-[250px] md:max-w-md">
+                  {formData.name || "User"}
+                </h1>
+                <p className="text-slate-500 font-medium flex items-center justify-center md:justify-start gap-2 text-sm md:text-base mb-3">
+                  <span>{formData.age} years</span>
+                  <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                  <span>{formData.country}</span>
+                </p>
+              </div>
+
+              {/* Edit Button - No longer absolute/hidden */}
+              {!isEditing ? (
+                <button onClick={() => setIsEditing(true)}
+                  className="group flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all text-sm font-bold">
+                  <Pencil className="w-4 h-4 text-slate-400 group-hover:text-violet-600 transition-colors" />
+                  <span>Edit Profile</span>
+                </button>
+              ) : (
+                <button onClick={() => setIsEditing(false)}
+                  className="flex items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 px-5 py-2.5 rounded-2xl border border-rose-100 transition-all text-sm font-bold">
+                  <X className="w-4 h-4" /> Cancel
+                </button>
+              )}
+            </div>
+
+            {/* Badges/Tags */}
+            <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
+              {formData.bmi && (
+                <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg border border-blue-100">
+                  BMI {formData.bmi}
+                </span>
+              )}
+              {formData.pcosStatus === 'yes' && (
+                <span className="px-3 py-1 bg-purple-50 text-purple-700 text-xs font-bold rounded-lg border border-purple-100 flex items-center gap-1">
+                  <Zap className="w-3 h-3" /> PCOS Warrior
+                </span>
+              )}
               {formData.conditions.map(c => (
-                <span key={c} className="px-3 py-1 bg-accent-purple/10 text-accent-purple text-xs font-bold rounded-full uppercase tracking-wider">{c}</span>
+                c !== 'PCOS' && (
+                  <span key={c} className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                    {c}
+                  </span>
+                )
               ))}
-              {formData.conditions.length === 0 && <span className="text-xs text-gray-400 italic">No conditions listed</span>}
             </div>
           </div>
         </div>
@@ -270,25 +303,24 @@ export default function Profile({ user, setUser }: ProfileProps) {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+      {/* NEW Tabs (Segmented Control) */}
+      <div className="flex bg-slate-100/80 p-1.5 rounded-2xl mb-8 overflow-x-auto no-scrollbar">
         {[
           { id: "profile", label: "Stats & Health" },
-          { id: "history", label: "Full History" },
+          { id: "history", label: "History" },
           { id: "data", label: "Data & Privacy" },
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-6 py-2.5 rounded-full font-bold text-sm transition-all whitespace-nowrap ${activeTab === tab.id
-              ? "bg-gray-900 text-white shadow-md"
-              : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
+            className={`flex-1 px-4 py-3 rounded-xl font-bold text-sm md:text-base transition-all whitespace-nowrap ${activeTab === tab.id
+                ? "bg-white text-slate-800 shadow-sm ring-1 ring-black/5"
+                : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               }`}
           >
             {tab.label}
           </button>
-        ))
-        }
+        ))}
       </div>
 
       {/* Stats Tab */}
