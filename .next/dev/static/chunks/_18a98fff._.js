@@ -8,6 +8,7 @@ __turbopack_context__.s([
     "auth",
     ()=>auth
 ]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$firebase$2f$app$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/firebase/app/dist/esm/index.esm.js [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$app$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@firebase/app/dist/esm/index.esm.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$firebase$2f$auth$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/firebase/auth/dist/esm/index.esm.js [app-client] (ecmascript) <locals>");
@@ -15,12 +16,12 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2
 ;
 ;
 const firebaseConfig = {
-    apiKey: "AIzaSyDSolGdHoNxDkHQyi0UkYu4EBwYdthvh2c",
-    authDomain: "menst-248cb.firebaseapp.com",
-    projectId: "menst-248cb",
-    storageBucket: "menst-248cb.firebasestorage.app",
-    messagingSenderId: "1034141462560",
-    appId: "1:1034141462560:web:b051fca4def8fcd4ea0c45"
+    apiKey: ("TURBOPACK compile-time value", "AIzaSyDSolGdHoNxDkHQyi0UkYu4EBwYdthvh2c"),
+    authDomain: ("TURBOPACK compile-time value", "menst-248cb.firebaseapp.com"),
+    projectId: ("TURBOPACK compile-time value", "menst-248cb"),
+    storageBucket: ("TURBOPACK compile-time value", "menst-248cb.firebasestorage.app"),
+    messagingSenderId: ("TURBOPACK compile-time value", "1034141462560"),
+    appId: ("TURBOPACK compile-time value", "1:1034141462560:web:b051fca4def8fcd4ea0c45")
 };
 // Initialize Firebase
 const app = !(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$app$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getApps"])().length ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$app$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["initializeApp"])(firebaseConfig) : (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$app$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getApp"])();
