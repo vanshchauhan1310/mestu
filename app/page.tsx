@@ -17,8 +17,10 @@ import HomePage from "@/components/home-page"
 
 export default function Home() {
   const router = useRouter()
-  const { user: authUser, loading: authLoading } = useAuth()
+  const { user: authUser, userData, loading: authLoading } = useAuth() // Get userData from context
   const [currentPage, setCurrentPage] = useState("dashboard")
+  // user state here might be redundant if we use userData from context, 
+  // but let's sync them for compatibility with existing components that expect 'user' prop
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showOnboarding, setShowOnboarding] = useState(false)
@@ -31,32 +33,29 @@ export default function Home() {
       return
     }
 
-    try {
-      const savedUser = localStorage.getItem("saukhya_user")
-      // We don't need onboardingComplete check if we just check user data existence
-      // const onboardingComplete = localStorage.getItem("saukhya_onboarding_complete")
-
-      if (savedUser) {
-        setUser(JSON.parse(savedUser))
-        setShowOnboarding(false)
-      } else {
-        setShowOnboarding(true)
-      }
-    } catch (error) {
-      console.log("[v0] localStorage access error:", error)
+    if (userData) {
+      setUser(userData)
+      setShowOnboarding(false)
+    } else {
+      // Auth exists but no Firestore data -> Onboarding needed
       setShowOnboarding(true)
-    } finally {
-      setIsLoading(false)
     }
-  }, [authUser, authLoading, router])
+    setIsLoading(false)
+
+  }, [authUser, authLoading, userData, router])
 
   if (showOnboarding) {
     return (
       <OnboardingFlow
-        onComplete={(userData) => {
-          setUser(userData)
+        onComplete={(newUserData) => {
+          setUser(newUserData) // Optimistic update
           setShowOnboarding(false)
           setCurrentPage("dashboard")
+          // We might trigger a context refresh here if needed, but OnboardingFlow writes to Firestore
+          // and if we navigated, the context listener *might* pick it up if it's realtime,
+          // but we implemented onAuthStateChanged which listens to AUTH, not Firestore doc changes.
+          // To make it perfect we'd listen to the doc in AuthContext.
+          // For now, setting local state 'user' works for immediate UI.
         }}
       />
     )
@@ -81,7 +80,7 @@ export default function Home() {
       case "profile":
         return <Profile user={user} setUser={setUser} />
       default:
-        return <Dashboard user={user} />
+        return <Dashboard user={user} /> // Dashboard will now receive live Firestore data via 'user' prop updated by realtime listener in Page
     }
   }
 

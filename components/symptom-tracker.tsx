@@ -39,6 +39,9 @@ const SYMPTOM_CATEGORIES = {
   },
 }
 
+import { collection, doc, getDocs, setDoc, query, where, getDoc } from "firebase/firestore"
+import { db, auth } from "@/lib/firebase"
+
 export default function SymptomTracker({ user }: SymptomTrackerProps) {
   const [symptoms, setSymptoms] = useState<any[]>([])
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
@@ -47,12 +50,20 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
   const [notes, setNotes] = useState("")
 
   useEffect(() => {
-    try {
-      const savedSymptoms = localStorage.getItem("saukhya_symptoms")
-      if (savedSymptoms) {
-        const parsed = JSON.parse(savedSymptoms)
-        setSymptoms(parsed)
-        const dateSymptoms = parsed.find((s: any) => s.date === selectedDate)
+    const fetchSymptoms = async () => {
+      if (!auth.currentUser) return
+      try {
+        // Fetch all symptoms for history (maybe limit this later)
+        const symptomsRef = collection(db, "users", auth.currentUser.uid, "symptoms")
+        const querySnapshot = await getDocs(symptomsRef)
+        const fetchedSymptoms = querySnapshot.docs.map(doc => ({
+          date: doc.id, // we use date as ID for uniqueness per day
+          ...doc.data()
+        }))
+        setSymptoms(fetchedSymptoms)
+
+        // Check if we have data for selectedDate in fetched symptoms
+        const dateSymptoms = fetchedSymptoms.find((s: any) => s.date === selectedDate)
         if (dateSymptoms) {
           setSelectedSymptoms(dateSymptoms.symptoms || {})
           setPainLevel(dateSymptoms.painLevel || 5)
@@ -62,10 +73,11 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
           setPainLevel(5)
           setNotes("")
         }
+      } catch (error) {
+        console.error("Error loading symptoms:", error)
       }
-    } catch (error) {
-      console.log("[v0] Error loading symptoms:", error)
     }
+    fetchSymptoms()
   }, [selectedDate])
 
   const handleSymptomSeverity = (symptomId: string, severity: number) => {
@@ -78,7 +90,8 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
     })
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!auth.currentUser) return
     try {
       const newEntry = {
         date: selectedDate,
@@ -86,10 +99,15 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
         painLevel,
         notes,
       }
+
+      // Save to Firestore using Date as Document ID to ensure one entry per day
+      await setDoc(doc(db, "users", auth.currentUser.uid, "symptoms", selectedDate), newEntry)
+
+      // Update local state
       const updatedSymptoms = symptoms.filter((s) => s.date !== selectedDate)
       updatedSymptoms.push(newEntry)
       setSymptoms(updatedSymptoms)
-      localStorage.setItem("saukhya_symptoms", JSON.stringify(updatedSymptoms))
+
       alert("Symptoms saved!")
     } catch (error) {
       console.log("[v0] Error saving symptoms:", error)
@@ -160,8 +178,7 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
                     <button
                       key={level}
                       onClick={() => handleSymptomSeverity(symptom.id, level)}
-                      className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-smooth ${
-                        selectedSymptoms[symptom.id] === level
+                      className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-smooth ${selectedSymptoms[symptom.id] === level
                           ? level === 0
                             ? "bg-muted text-muted-foreground"
                             : level === 1
@@ -170,7 +187,7 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
                                 ? "bg-orange-200 text-orange-800"
                                 : "bg-accent-red text-white"
                           : "bg-muted text-muted-foreground hover:bg-border"
-                      }`}
+                        }`}
                     >
                       {level === 0 ? "None" : level === 1 ? "Mild" : level === 2 ? "Moderate" : "Severe"}
                     </button>

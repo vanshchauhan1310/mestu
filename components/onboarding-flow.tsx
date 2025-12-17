@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { doc, setDoc } from "firebase/firestore"
+import { auth, db } from "@/lib/firebase"
 
 interface OnboardingFlowProps {
   onComplete: (userData: any) => void
@@ -79,13 +81,40 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     }))
   }
 
-  const handleNext = () => {
+  // ... inside component ...
+
+  // ... inside component ...
+
+  const handleNext = async () => {
     if (step < 6) {
       setStep(step + 1)
     } else {
-      localStorage.setItem("saukhya_user", JSON.stringify(userData))
-      localStorage.setItem("saukhya_onboarding_complete", "true")
-      onComplete(userData)
+      try {
+        const user = auth.currentUser
+        if (user) {
+          await setDoc(doc(db, "users", user.uid), {
+            ...userData,
+            isOnboardingComplete: true,
+            createdAt: new Date().toISOString(),
+            email: user.email, // save email if available
+            phoneNumber: user.phoneNumber,
+          })
+          // Keep localStorage as backup/cache for now if needed, but primary is Firestore
+          localStorage.setItem("saukhya_user", JSON.stringify(userData))
+          localStorage.setItem("saukhya_onboarding_complete", "true")
+
+          onComplete(userData)
+        } else {
+          console.error("No authenticated user found during onboarding")
+          // Fallback to local storage if something is wrong with auth, though this shouldn't happen due to route protection
+          localStorage.setItem("saukhya_user", JSON.stringify(userData))
+          localStorage.setItem("saukhya_onboarding_complete", "true")
+          onComplete(userData)
+        }
+      } catch (error) {
+        console.error("Error saving user profile to Firestore:", error)
+        alert("There was an error saving your profile. Please try again.")
+      }
     }
   }
 
@@ -197,11 +226,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   <button
                     key={intensity}
                     onClick={() => setUserData({ ...userData, flowIntensity: intensity })}
-                    className={`py-3 px-4 rounded-lg font-medium transition-smooth ${
-                      userData.flowIntensity === intensity
-                        ? "bg-primary text-white"
-                        : "bg-border text-foreground hover:bg-border/80"
-                    }`}
+                    className={`py-3 px-4 rounded-lg font-medium transition-smooth ${userData.flowIntensity === intensity
+                      ? "bg-primary text-white"
+                      : "bg-border text-foreground hover:bg-border/80"
+                      }`}
                   >
                     {intensity.charAt(0).toUpperCase() + intensity.slice(1).replace("-", " ")}
                   </button>
@@ -223,11 +251,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 <button
                   key={condition.id}
                   onClick={() => handleConditionToggle(condition.id)}
-                  className={`p-4 rounded-lg border-2 transition-smooth text-center ${
-                    userData.conditions.includes(condition.id)
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
-                  }`}
+                  className={`p-4 rounded-lg border-2 transition-smooth text-center ${userData.conditions.includes(condition.id)
+                    ? "border-primary bg-primary/10"
+                    : "border-border hover:border-primary/50"
+                    }`}
                 >
                   <div className="text-2xl mb-2">{condition.icon}</div>
                   <div className="text-sm font-medium text-foreground">{condition.label}</div>
@@ -249,11 +276,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 <button
                   key={symptom}
                   onClick={() => handleSymptomToggle(symptom)}
-                  className={`p-3 rounded-lg border-2 transition-smooth text-left ${
-                    userData.symptoms.includes(symptom)
-                      ? "border-accent-warm bg-accent-warm/10"
-                      : "border-border hover:border-accent-warm/50"
-                  }`}
+                  className={`p-3 rounded-lg border-2 transition-smooth text-left ${userData.symptoms.includes(symptom)
+                    ? "border-accent-warm bg-accent-warm/10"
+                    : "border-border hover:border-accent-warm/50"
+                    }`}
                 >
                   <div className="text-sm font-medium text-foreground">{symptom}</div>
                 </button>
@@ -299,11 +325,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 <button
                   key={goal}
                   onClick={() => handleGoalToggle(goal)}
-                  className={`w-full p-4 rounded-lg border-2 transition-smooth text-left ${
-                    userData.goals.includes(goal)
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
-                  }`}
+                  className={`w-full p-4 rounded-lg border-2 transition-smooth text-left ${userData.goals.includes(goal)
+                    ? "border-primary bg-primary/10"
+                    : "border-border hover:border-primary/50"
+                    }`}
                 >
                   <div className="text-sm font-medium text-foreground">{goal}</div>
                 </button>

@@ -10,11 +10,16 @@ interface PeriodTrackerProps {
   user: any
 }
 
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore"
+import { db, auth } from "@/lib/firebase"
+
+// ... imports
+
 export default function PeriodTracker({ user }: PeriodTrackerProps) {
   const [cycles, setCycles] = useState<any[]>([])
   const [showForm, setShowForm] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null) // Changed to string for Firestore IDs
   const [formData, setFormData] = useState({
     startDate: "",
     endDate: "",
@@ -23,35 +28,65 @@ export default function PeriodTracker({ user }: PeriodTrackerProps) {
   })
 
   useEffect(() => {
-    const savedCycles = localStorage.getItem("saukhya_cycles")
-    if (savedCycles) {
-      setCycles(JSON.parse(savedCycles))
+    const fetchCycles = async () => {
+      if (!auth.currentUser) return
+      try {
+        const cyclesRef = collection(db, "users", auth.currentUser.uid, "cycles")
+        const q = query(cyclesRef, orderBy("startDate", "desc"))
+        const querySnapshot = await getDocs(q)
+        const fetchedCycles = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        setCycles(fetchedCycles)
+      } catch (error) {
+        console.error("Error fetching cycles:", error)
+      }
     }
+    fetchCycles()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    let updatedCycles
-    if (editingId) {
-      updatedCycles = cycles.map((cycle) => (cycle.id === editingId ? { ...cycle, ...formData } : cycle))
-      setEditingId(null)
-    } else {
-      const newCycle = {
-        id: Date.now(),
-        ...formData,
+    if (!auth.currentUser) return
+
+    try {
+      if (editingId) {
+        // editingId is likely a string now (doc ID), but let's check since we used Date.now() before
+        // If it's a new migration, old IDs might be numbers, new ones strings.
+        // For simplicity in this "new" app, we assume we are creating new real data mostly.
+        // If editingId is present, we update.
+        const cycleRef = doc(db, "users", auth.currentUser.uid, "cycles", editingId.toString())
+        await updateDoc(cycleRef, formData)
+
+        setCycles(cycles.map((cycle) => (cycle.id === editingId ? { ...cycle, ...formData } : cycle)))
+        setEditingId(null)
+      } else {
+        const newCycleData = {
+          ...formData,
+          createdAt: new Date().toISOString()
+        }
+        const docRef = await addDoc(collection(db, "users", auth.currentUser.uid, "cycles"), newCycleData)
+        const newCycle = { id: docRef.id, ...newCycleData }
+        setCycles([newCycle, ...cycles])
       }
-      updatedCycles = [...cycles, newCycle]
+    } catch (error) {
+      console.error("Error saving cycle:", error)
+      alert("Failed to save cycle")
     }
-    setCycles(updatedCycles)
-    localStorage.setItem("saukhya_cycles", JSON.stringify(updatedCycles))
+
     setFormData({ startDate: "", endDate: "", flowIntensity: "moderate", notes: "" })
     setShowForm(false)
   }
 
-  const handleDelete = (id: number) => {
-    const updatedCycles = cycles.filter((cycle) => cycle.id !== id)
-    setCycles(updatedCycles)
-    localStorage.setItem("saukhya_cycles", JSON.stringify(updatedCycles))
+  const handleDelete = async (id: any) => {
+    if (!auth.currentUser) return
+    try {
+      await deleteDoc(doc(db, "users", auth.currentUser.uid, "cycles", id.toString()))
+      setCycles(cycles.filter((cycle) => cycle.id !== id))
+    } catch (error) {
+      console.error("Error deleting cycle:", error)
+    }
   }
 
   const handleEdit = (cycle: any) => {
@@ -176,9 +211,9 @@ export default function PeriodTracker({ user }: PeriodTrackerProps) {
                       Duration:{" "}
                       {cycle.endDate
                         ? Math.ceil(
-                            (new Date(cycle.endDate).getTime() - new Date(cycle.startDate).getTime()) /
-                              (1000 * 60 * 60 * 24),
-                          ) + 1
+                          (new Date(cycle.endDate).getTime() - new Date(cycle.startDate).getTime()) /
+                          (1000 * 60 * 60 * 24),
+                        ) + 1
                         : "ongoing"}{" "}
                       days
                     </p>

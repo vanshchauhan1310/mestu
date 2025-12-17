@@ -1,6 +1,5 @@
-"use client"
-
 import { useState, useEffect } from "react"
+import { Calendar, Activity, Zap, Droplets } from "lucide-react"
 
 interface HomeQuickStatsProps {
   user: any
@@ -51,33 +50,62 @@ export default function HomeQuickStats({ user }: HomeQuickStatsProps) {
   }, [user])
 
   return (
-    <div className="grid grid-cols-2 gap-3 mb-6">
-      <div className="bg-gradient-to-br from-primary to-primary-light rounded-xl p-4 text-white shadow-md">
-        <div className="text-2xl mb-2">📅</div>
-        <p className="text-xs text-white/80 mb-1 font-medium">Current Phase</p>
-        <p className="font-bold text-sm">{cycleData.phase || "Loading..."}</p>
-        <p className="text-xs text-white/70 mt-1">Day {cycleData.dayInCycle + 1}</p>
+    <div className="grid grid-cols-2 gap-4 mb-8">
+      {/* Current Phase */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/20 group transition-transform hover:scale-[1.02]">
+        <div className="absolute top-0 right-0 -mt-2 -mr-2 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
+        <div className="flex justify-between items-start mb-3">
+          <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+            <Calendar className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-[10px] font-bold uppercase tracking-wider bg-black/10 px-2 py-1 rounded-md">Phase</span>
+        </div>
+        <div>
+          <p className="font-bold text-lg leading-tight">{cycleData.phase || "Loading..."}</p>
+          <p className="text-sm text-emerald-100 font-medium">Day {cycleData.dayInCycle + 1}</p>
+        </div>
       </div>
 
-      <div className="bg-gradient-to-br from-accent-warm to-orange-600 rounded-xl p-4 text-white shadow-md">
-        <div className="text-2xl mb-2">📊</div>
-        <p className="text-xs text-white/80 mb-1 font-medium">Next Period</p>
-        <p className="font-bold text-sm">{cycleData.daysUntilPeriod} days</p>
-        <p className="text-xs text-white/70 mt-1">{cycleData.nextPeriod}</p>
+      {/* Next Period */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-orange-500/20 group transition-transform hover:scale-[1.02]">
+        <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
+        <div className="flex justify-between items-start mb-3">
+          <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+            <Activity className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-[10px] font-bold uppercase tracking-wider bg-black/10 px-2 py-1 rounded-md">Next</span>
+        </div>
+        <div>
+          <p className="font-bold text-2xl">{cycleData.daysUntilPeriod} <span className="text-sm font-medium opacity-80">days</span></p>
+          <p className="text-xs text-orange-100 mt-1">Expected {cycleData.nextPeriod}</p>
+        </div>
       </div>
 
-      <div className="bg-gradient-to-br from-accent-purple to-purple-700 rounded-xl p-4 text-white shadow-md">
-        <div className="text-2xl mb-2">💭</div>
-        <p className="text-xs text-white/80 mb-1 font-medium">Flow</p>
-        <p className="font-bold text-sm capitalize">{user?.flowIntensity || "Not set"}</p>
-        <p className="text-xs text-white/70 mt-1">{user?.conditions?.length || 0} conditions</p>
+      {/* Flow & Symptoms */}
+      <div className="relative overflow-hidden bg-white border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="bg-purple-100 p-2 rounded-full">
+            <Droplets className="w-4 h-4 text-purple-600" />
+          </div>
+          <span className="text-xs font-semibold text-muted-foreground uppercase">Flow</span>
+        </div>
+        <p className="font-bold text-foreground capitalize text-lg">{user?.flowIntensity || "Not set"}</p>
+        <p className="text-xs text-muted-foreground mt-1">{user?.conditions?.length || 0} conditions logged</p>
       </div>
 
-      <div className="bg-gradient-to-br from-primary-light to-green-700 rounded-xl p-4 text-white shadow-md">
-        <div className="text-2xl mb-2">🎯</div>
-        <p className="text-xs text-white/80 mb-1 font-medium">Pain Level</p>
-        <p className="font-bold text-sm">{user?.painLevel || "0"}/10</p>
-        <p className="text-xs text-white/70 mt-1">Typical</p>
+      {/* Pain Level */}
+      <div className="relative overflow-hidden bg-white border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="bg-red-100 p-2 rounded-full">
+            <Zap className="w-4 h-4 text-red-500" />
+          </div>
+          <span className="text-xs font-semibold text-muted-foreground uppercase">Pain</span>
+        </div>
+        <div className="flex items-baseline gap-1">
+          <p className="font-bold text-foreground text-2xl">{user?.painLevel || "0"}</p>
+          <span className="text-xs text-muted-foreground font-medium">/ 10</span>
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">Typical level</p>
       </div>
     </div>
   )

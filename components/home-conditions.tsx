@@ -1,4 +1,4 @@
-"use client"
+import { AlertCircle, Zap, Frown, Droplets, Target, Hash, HelpCircle } from "lucide-react"
 
 interface HomeConditionsProps {
   user: any
@@ -9,29 +9,32 @@ export default function HomeConditions({ user }: HomeConditionsProps) {
     return null
   }
 
-  const conditionEmojis: Record<string, string> = {
-    PCOS: "🔄",
-    Endometriosis: "⚡",
-    PMDD: "😔",
-    "Heavy Bleeding": "🩸",
-    Fibroids: "🎯",
-    Adenomyosis: "💔",
-    "Irregular Cycles": "❓",
+  const conditionIcons: Record<string, any> = {
+    PCOS: AlertCircle,
+    Endometriosis: Zap,
+    PMDD: Frown,
+    "Heavy Bleeding": Droplets,
+    Fibroids: Target,
+    Adenomyosis: Hash,
+    "Irregular Cycles": HelpCircle,
   }
 
   return (
-    <div className="mb-6">
-      <h3 className="text-sm font-bold text-foreground mb-3">Your Conditions</h3>
+    <div className="mb-8">
+      <h3 className="text-lg font-bold text-foreground mb-4">Your Conditions</h3>
       <div className="flex flex-wrap gap-2">
-        {user.conditions.map((condition: string) => (
-          <div
-            key={condition}
-            className="bg-primary/10 border-2 border-primary/30 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-sm"
-          >
-            <span className="text-lg">{conditionEmojis[condition] || "🏥"}</span>
-            <span className="text-xs font-medium text-foreground">{condition}</span>
-          </div>
-        ))}
+        {user.conditions.map((condition: string) => {
+          const Icon = conditionIcons[condition] || AlertCircle
+          return (
+            <div
+              key={condition}
+              className="bg-primary/5 text-primary border border-primary/20 rounded-full pl-3 pr-4 py-2 flex items-center gap-2 transition-transform hover:-translate-y-0.5"
+            >
+              <Icon className="w-4 h-4" />
+              <span className="text-xs font-semibold">{condition}</span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
