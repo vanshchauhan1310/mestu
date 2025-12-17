@@ -3,12 +3,16 @@
 import { useState, useEffect } from "react"
 import WellnessTracker from "./wellness-tracker"
 import CycleRecommendations from "./cycle-recommendations"
+import AISymptomChecker from "./ai-symptom-checker"
+
+import { useLanguage } from "./language-context"
 
 interface HealthToolsProps {
   user: any
 }
 
 export default function HealthTools({ user }: HealthToolsProps) {
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState("wellness")
   const [cycles, setCycles] = useState<any[]>([])
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
@@ -89,8 +93,8 @@ export default function HealthTools({ user }: HealthToolsProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-foreground mb-2">Health Management Tools</h2>
-        <p className="text-muted-foreground">Exercise, nutrition, wellness, and cycle-based recommendations</p>
+        <h2 className="text-3xl font-bold text-foreground mb-2">{t('healthTools')}</h2>
+        <p className="text-muted-foreground">{t('healthToolsDesc')}</p>
       </div>
 
       {/* Cycle Recommendations */}
@@ -105,38 +109,47 @@ export default function HealthTools({ user }: HealthToolsProps) {
         <button
           onClick={() => setActiveTab("wellness")}
           className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "wellness"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+            ? "border-primary text-primary"
+            : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
         >
-          💪 Wellness
+          💪 {t('wellness')}
         </button>
         <button
           onClick={() => setActiveTab("exercise")}
           className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "exercise"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+            ? "border-primary text-primary"
+            : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
         >
-          🏃 Exercise
+          🏃 {t('exercise')}
         </button>
         <button
           onClick={() => setActiveTab("nutrition")}
           className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "nutrition"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+            ? "border-primary text-primary"
+            : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
         >
-          🥗 Nutrition
+          🥗 {t('nutrition')}
         </button>
         <button
           onClick={() => setActiveTab("stress")}
           className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "stress"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+            ? "border-primary text-primary"
+            : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
         >
-          🧘 Stress Relief
+          🧘 {t('stressRelief')}
+        </button>
+        <button
+          onClick={() => setActiveTab("ai_check")}
+          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "ai_check"
+            ? "border-accent-purple text-accent-purple"
+            : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+        >
+          🤖 {t('aiCheck')}
         </button>
       </div>
 
@@ -204,6 +217,9 @@ export default function HealthTools({ user }: HealthToolsProps) {
           ))}
         </div>
       )}
+
+      {/* AI Check Tab */}
+      {activeTab === "ai_check" && <AISymptomChecker />}
 
       {/* Stress Relief Tab */}
       {activeTab === "stress" && (

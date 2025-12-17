@@ -8,7 +8,7 @@ interface CycleInsightsProps {
 
 export default function CycleInsights({ cycles }: CycleInsightsProps) {
   const { t } = useLanguage()
-  // Helper helper: Standard Deviation
+  // Helper: Weighted Standard Deviation (simplified) or just use standard
   const getStandardDeviation = (array: number[]) => {
     if (array.length === 0) return 0
     const n = array.length
@@ -16,74 +16,95 @@ export default function CycleInsights({ cycles }: CycleInsightsProps) {
     return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
   }
 
+  // AI Logic: Weighted Moving Average
+  const calculateWeightedAverage = (lengths: number[]) => {
+    if (lengths.length === 0) return 28
+    // Weights: [1.0, 0.8, 0.6, ...] for recent to old
+    // Limit to last 6 cycles for relevance
+    const recentLengths = lengths.slice(0, 6)
+    let weightSum = 0
+    let weightedSum = 0
+
+    recentLengths.forEach((len, i) => {
+      const weight = Math.max(0.2, 1 - (i * 0.15)) // Decay weight
+      weightedSum += len * weight
+      weightSum += weight
+    })
+
+    return weightedSum / weightSum
+  }
+
   const calculateCycleStats = () => {
     if (cycles.length < 2) return null
 
+    // Ensure sorted descending (Newest first)
+    const sortedCycles = [...cycles].sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+
     const cycleLengths = []
-    for (let i = 1; i < cycles.length; i++) {
-      const prevStart = new Date(cycles[i - 1].startDate)
-      const currStart = new Date(cycles[i].startDate)
-      const diff = Math.floor((currStart.getTime() - prevStart.getTime()) / (1000 * 60 * 60 * 24))
+    // Calculate lengths: Start of New - Start of Old. 
+    // sortedCycles[0] is newest. sortedCycles[1] is previous.
+    // Length of cycle 1 is (Start 0 - Start 1).
+    for (let i = 0; i < sortedCycles.length - 1; i++) {
+      const newer = new Date(sortedCycles[i].startDate)
+      const older = new Date(sortedCycles[i + 1].startDate)
+      const diff = Math.floor((newer.getTime() - older.getTime()) / (1000 * 60 * 60 * 24))
       cycleLengths.push(diff)
     }
 
+    if (cycleLengths.length === 0) return null
+
     const avgCycleLength = Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
+    const weightedLength = calculateWeightedAverage(cycleLengths)
+
     const minCycleLength = Math.min(...cycleLengths)
     const maxCycleLength = Math.max(...cycleLengths)
     const stdDev = getStandardDeviation(cycleLengths)
-    const isIrregular = stdDev > 4 // Threshold for irregularity
+    const isIrregular = stdDev > 3.5 // Stricter threshold
 
-    // AI Confidence Score (Simple heuristic: Lower variance = higher confidence)
-    let confidence = 100 - (stdDev * 5)
-    confidence = Math.max(10, Math.min(95, confidence)) // Clamp between 10% and 95%
+    // AI Confidence Score
+    // Penalty for high variance and low history count
+    let confidence = 100 - (stdDev * 8)
+    if (cycleLengths.length < 3) confidence -= 20
+    confidence = Math.max(15, Math.min(98, confidence))
 
-    return { avgCycleLength, minCycleLength, maxCycleLength, stdDev, isIrregular, confidence }
+    return {
+      avgCycleLength,
+      weightedLength, // Use this for prediction
+      minCycleLength,
+      maxCycleLength,
+      stdDev,
+      isIrregular,
+      confidence,
+      historyCount: cycleLengths.length
+    }
   }
 
   const getNextPeriodPrediction = () => {
+    const stats = calculateCycleStats()
+    if (!stats) return null
     if (cycles.length === 0) return null
 
-    const lastCycle = cycles[0] // Sorted desc in PeriodTracker, so index 0 is latest? Wait, let's verify sort. 
-    // In PeriodTracker: .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)) -> Descending (newest first).
-    // Cycles passing in prop usually come from there. If they are raw unsorted, we should sort.
-    // Let's assume they are sorted by StartDate DESCENDING as per Firestore query.
-    // If so, cycles[0] is the NEWEST.
-    // BUT the loop above `for (let i = 1; i < cycles.length; i++)` assumes order?
-    // Actually, `cycles` from `PeriodTracker` useEffect uses `orderBy("startDate", "desc")`. 
-    // So cycles[0] is LATEST. cycles[1] is PREVIOUS.
-    // My previous loop logic `cycles[i] - cycles[i-1]` would mean `older - newer` => negative.
-    // I need to fix the loop order handling or sort local.
+    // Correct: Use newest cycle start + predicted length
+    // sortedCycles[0] is newest
+    const sortedCycles = [...cycles].sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+    const lastStart = new Date(sortedCycles[0].startDate)
 
-    // Let's safe sort local to be sure.
-    const sortedCycles = [...cycles].sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
-    // Now sortedCycles[last] is newest.
+    // AI PREDICTION: Use Weighted Length
+    const predictedLength = stats.weightedLength
 
-    // Re-calc with sorted
-    const cycleLengths = []
-    for (let i = 1; i < sortedCycles.length; i++) {
-      const prevStart = new Date(sortedCycles[i - 1].startDate)
-      const currStart = new Date(sortedCycles[i].startDate)
-      const diff = Math.floor((currStart.getTime() - prevStart.getTime()) / (1000 * 60 * 60 * 24))
-      cycleLengths.push(diff)
-    }
-
-    // Stats logic again with sorted
-    if (cycleLengths.length === 0) return null
-    const avgLen = Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
-    const stdDev = getStandardDeviation(cycleLengths)
-
-    // Prediction
-    const lastStart = new Date(sortedCycles[sortedCycles.length - 1].startDate)
-    const nextDate = new Date(lastStart.getTime() + avgLen * 24 * 60 * 60 * 1000)
+    const nextDate = new Date(lastStart.getTime() + predictedLength * 24 * 60 * 60 * 1000)
     const today = new Date()
+    // Reset time for accurate day calc
+    nextDate.setHours(0, 0, 0, 0)
+    today.setHours(0, 0, 0, 0)
+
     const daysUntil = Math.ceil((nextDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
-    // Range (AI Prediction)
-    const margin = Math.ceil(stdDev)
+    const margin = Math.ceil(stats.stdDev)
     const startRange = new Date(nextDate.getTime() - margin * 24 * 60 * 60 * 1000)
     const endRange = new Date(nextDate.getTime() + margin * 24 * 60 * 60 * 1000)
 
-    return { nextPeriod: nextDate, daysUntil, isIrregular: stdDev > 4, startRange, endRange, margin }
+    return { nextPeriod: nextDate, daysUntil, isIrregular: stats.isIrregular, startRange, endRange, margin }
   }
 
   const getCyclePhase = () => {

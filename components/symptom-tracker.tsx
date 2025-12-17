@@ -76,13 +76,76 @@ const CONDITION_SPECIFIC_SYMPTOMS: any = {
 
 import { collection, doc, getDocs, setDoc, query, where, getDoc } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
+import { useAuth } from "./auth-context"
+
+import { useLanguage } from "./language-context"
 
 export default function SymptomTracker({ user }: SymptomTrackerProps) {
+  const { userData } = useAuth()
+  const { t } = useLanguage()
   const [symptoms, setSymptoms] = useState<any[]>([])
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
   const [selectedSymptoms, setSelectedSymptoms] = useState<{ [key: string]: number }>({})
   const [painLevel, setPainLevel] = useState(5)
   const [notes, setNotes] = useState("")
+
+  // Dynamically build categories based on user conditions
+  const getCategories = () => {
+    // Base categories with translations
+    const categories: any = {
+      physical: {
+        label: t('physicalSymptoms'),
+        symptoms: [
+          { id: "cramps", label: t('cramps'), icon: "😣" },
+          { id: "bloating", label: t('bloating'), icon: "🤰" },
+          { id: "fatigue", label: t('fatigue'), icon: "😴" },
+          { id: "headache", label: t('headache'), icon: "🤕" },
+          { id: "nausea", label: t('nausea'), icon: "🤢" },
+          { id: "acne", label: t('acne'), icon: "🔴" },
+        ],
+      },
+      emotional: {
+        label: t('emotionalSymptoms'),
+        symptoms: [
+          { id: "mood", label: t('moodChanges'), icon: "😔" },
+          { id: "anxiety", label: "Anxiety", icon: "😰" }, // TODO: Add key
+          { id: "irritability", label: t('irritability'), icon: "😠" },
+          { id: "depression", label: t('depression'), icon: "😞" },
+        ],
+      },
+      lifestyle: {
+        label: t('lifestyleSymptoms'),
+        symptoms: [
+          { id: "sleep", label: t('sleepIssues'), icon: "🛌" },
+          { id: "appetite", label: t('appetiteChanges'), icon: "🍽️" },
+          { id: "energy", label: t('lowEnergy'), icon: "⚡" },
+          { id: "concentration", label: "Concentration", icon: "🧠" }, // TODO: Add Key
+        ],
+      },
+    }
+
+    // Check if user has noted conditions
+    if (userData?.conditions) {
+      // ... same logic ... (I need to keep the logic)
+      const userConditions = (Array.isArray(userData.conditions) ? userData.conditions : [userData.conditions]).map((c: string) => c.toLowerCase())
+
+      if (userConditions.some((c: string) => c.includes("pcos"))) {
+        categories.pcos = CONDITION_SPECIFIC_SYMPTOMS.pcos
+      }
+      if (userConditions.some((c: string) => c.includes("endo"))) {
+        categories.endometriosis = CONDITION_SPECIFIC_SYMPTOMS.endometriosis
+      }
+      if (userConditions.some((c: string) => c.includes("pmdd"))) {
+        categories.pmdd = CONDITION_SPECIFIC_SYMPTOMS.pmdd
+      }
+      if (userConditions.some((c: string) => c.includes("fibroid"))) {
+        categories.fibroids = CONDITION_SPECIFIC_SYMPTOMS.fibroids
+      }
+    }
+    return categories
+  }
+
+  const displayedCategories = getCategories()
 
   useEffect(() => {
     const fetchSymptoms = async () => {
@@ -91,7 +154,7 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
         // Fetch all symptoms for history (maybe limit this later)
         const symptomsRef = collection(db, "users", auth.currentUser.uid, "symptoms")
         const querySnapshot = await getDocs(symptomsRef)
-        const fetchedSymptoms = querySnapshot.docs.map(doc => ({
+        const fetchedSymptoms: any[] = querySnapshot.docs.map(doc => ({
           date: doc.id, // we use date as ID for uniqueness per day
           ...doc.data()
         }))
@@ -196,11 +259,11 @@ export default function SymptomTracker({ user }: SymptomTrackerProps) {
       </div>
 
       {/* Symptoms by Category */}
-      {Object.entries(SYMPTOM_CATEGORIES).map(([categoryKey, category]) => (
+      {Object.entries(displayedCategories).map(([categoryKey, category]: [string, any]) => (
         <div key={categoryKey} className="mb-8 bg-white border border-border rounded-lg p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-foreground mb-4">{category.label}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {category.symptoms.map((symptom) => (
+            {category.symptoms.map((symptom: any) => (
               <div key={symptom.id} className="border border-border rounded-lg p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">

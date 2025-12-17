@@ -6,6 +6,8 @@ import { useState, useEffect } from "react"
 import ProfileStats from "./profile-stats"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { TrendingUp } from 'lucide-react'
+import { doc, updateDoc } from "firebase/firestore"
+import { db, auth } from "@/lib/firebase"
 
 import { useLanguage } from "./language-context"
 
@@ -15,7 +17,7 @@ interface ProfileProps {
 }
 
 export default function Profile({ user, setUser }: ProfileProps) {
-  const { language, setLanguage } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
   const [activeTab, setActiveTab] = useState("profile")
   const [formData, setFormData] = useState({
     name: "",
@@ -84,11 +86,19 @@ export default function Profile({ user, setUser }: ProfileProps) {
     // Let's blank them out for now to encourage Firestore usage or leave them compatible.
   }, [])
 
-  const handleProfileSubmit = (e: React.FormEvent) => {
+  const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    localStorage.setItem("saukhya_user", JSON.stringify(formData))
-    setUser(formData)
-    alert("Profile updated!")
+    try {
+      if (auth.currentUser) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), formData)
+      }
+      localStorage.setItem("saukhya_user", JSON.stringify(formData))
+      setUser(formData)
+      alert("Profile updated successfully!")
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      alert("Failed to update profile")
+    }
   }
 
   const handleNotificationSubmit = (e: React.FormEvent) => {
@@ -207,10 +217,10 @@ export default function Profile({ user, setUser }: ProfileProps) {
         >
           {/* Basic Info */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Basic Information</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('basicInfo')}</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Name</label>
+                <label className="block text-sm font-semibold text-foreground mb-2">{t('nameLabel')}</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -221,7 +231,7 @@ export default function Profile({ user, setUser }: ProfileProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Email</label>
+                <label className="block text-sm font-semibold text-foreground mb-2">{t('email')}</label>
                 <input
                   type="email"
                   value={formData.email}
@@ -232,7 +242,7 @@ export default function Profile({ user, setUser }: ProfileProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Age</label>
+                <label className="block text-sm font-semibold text-foreground mb-2">{t('ageLabel')}</label>
                 <input
                   type="number"
                   value={formData.age}
@@ -246,10 +256,10 @@ export default function Profile({ user, setUser }: ProfileProps) {
 
           {/* Cycle Info */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Cycle Information</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('cycleInfo')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Average Cycle Length (days)</label>
+                <label className="block text-sm font-semibold text-foreground mb-2">{t('cycleLengthLabel')}</label>
                 <input
                   type="number"
                   value={formData.cycleLength}
@@ -261,7 +271,7 @@ export default function Profile({ user, setUser }: ProfileProps) {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2">
-                  Average Period Duration (days)
+                  {t('periodDurationLabel')}
                 </label>
                 <input
                   type="number"
@@ -277,7 +287,7 @@ export default function Profile({ user, setUser }: ProfileProps) {
 
           {/* Conditions */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Health Conditions</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('healthConditions')}</h3>
             <div className="space-y-2">
               {["PCOS", "Endometriosis", "PMDD", "Fibroids", "Adenomyosis"].map((condition) => (
                 <label key={condition} className="flex items-center gap-3 cursor-pointer">
@@ -297,7 +307,7 @@ export default function Profile({ user, setUser }: ProfileProps) {
             type="submit"
             className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-smooth"
           >
-            Save Profile
+            {t('saveProfile')}
           </button>
         </form>
       )}
