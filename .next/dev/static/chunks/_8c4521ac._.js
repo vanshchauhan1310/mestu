@@ -487,9 +487,14 @@ __turbopack_context__.s([
     ()=>CycleInsights
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$language$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/language-context.tsx [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
 "use client";
 ;
 function CycleInsights({ cycles }) {
+    _s();
+    const { t } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$language$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLanguage"])();
     // Helper helper: Standard Deviation
     const getStandardDeviation = (array)=>{
         if (array.length === 0) return 0;
@@ -615,15 +620,15 @@ function CycleInsights({ cycles }) {
                         children: phase.emoji
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 112,
+                        lineNumber: 115,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                         className: "font-semibold mb-1",
-                        children: "Current Phase"
+                        children: t('currentPhase')
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 113,
+                        lineNumber: 116,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -631,13 +636,13 @@ function CycleInsights({ cycles }) {
                         children: phase.phase
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 114,
+                        lineNumber: 117,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/cycle-insights.tsx",
-                lineNumber: 111,
+                lineNumber: 114,
                 columnNumber: 9
             }, this),
             prediction && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -651,32 +656,33 @@ function CycleInsights({ cycles }) {
                                 children: "📅"
                             }, void 0, false, {
                                 fileName: "[project]/components/cycle-insights.tsx",
-                                lineNumber: 122,
+                                lineNumber: 125,
                                 columnNumber: 13
                             }, this),
                             stats && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: `px-2 py-1 rounded-full text-xs font-bold ${stats.confidence > 80 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`,
                                 children: [
                                     Math.round(stats.confidence),
-                                    "% Confidence"
+                                    "% ",
+                                    t('confidence')
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/cycle-insights.tsx",
-                                lineNumber: 124,
+                                lineNumber: 127,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 121,
+                        lineNumber: 124,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                         className: "font-semibold text-foreground mb-1",
-                        children: "Predicted Start"
+                        children: t('predictedStart')
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 129,
+                        lineNumber: 132,
                         columnNumber: 11
                     }, this),
                     prediction.isIrregular ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -696,7 +702,7 @@ function CycleInsights({ cycles }) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/cycle-insights.tsx",
-                                lineNumber: 133,
+                                lineNumber: 136,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -704,17 +710,19 @@ function CycleInsights({ cycles }) {
                                 children: [
                                     "Due to irregularity (+/- ",
                                     prediction.margin,
-                                    " days)"
+                                    " ",
+                                    t('days'),
+                                    ")"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/cycle-insights.tsx",
-                                lineNumber: 136,
+                                lineNumber: 139,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 132,
+                        lineNumber: 135,
                         columnNumber: 13
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         className: "text-lg font-bold text-primary",
@@ -725,21 +733,21 @@ function CycleInsights({ cycles }) {
                         })
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 141,
+                        lineNumber: 144,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         className: "text-sm text-muted-foreground mt-2",
-                        children: prediction.daysUntil > 0 ? `In approx ${prediction.daysUntil} days` : 'Expected soon'
+                        children: prediction.daysUntil > 0 ? `${t('inApprox')} ${prediction.daysUntil} ${t('days')}` : t('expectedSoon')
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 146,
+                        lineNumber: 149,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/cycle-insights.tsx",
-                lineNumber: 120,
+                lineNumber: 123,
                 columnNumber: 9
             }, this),
             stats && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -750,15 +758,15 @@ function CycleInsights({ cycles }) {
                         children: "📊"
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 155,
+                        lineNumber: 158,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                         className: "font-semibold text-foreground mb-3",
-                        children: "Cycle Statistics"
+                        children: t('cycleStats')
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 156,
+                        lineNumber: 159,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -767,45 +775,19 @@ function CycleInsights({ cycles }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-muted-foreground",
                                 children: [
-                                    "Average: ",
+                                    t('average'),
+                                    ": ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "font-semibold text-foreground",
                                         children: [
                                             stats.avgCycleLength,
-                                            " days"
+                                            " ",
+                                            t('days')
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/cycle-insights.tsx",
-                                        lineNumber: 159,
-                                        columnNumber: 24
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/components/cycle-insights.tsx",
-                                lineNumber: 158,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "text-muted-foreground",
-                                children: [
-                                    "Range:",
-                                    " ",
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "font-semibold text-foreground",
-                                        children: [
-                                            stats.minCycleLength,
-                                            "-",
-                                            stats.maxCycleLength,
-                                            " days",
-                                            stats.minCycleLength,
-                                            "-",
-                                            stats.maxCycleLength,
-                                            " days"
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/components/cycle-insights.tsx",
-                                        lineNumber: 163,
-                                        columnNumber: 15
+                                        lineNumber: 162,
+                                        columnNumber: 31
                                     }, this)
                                 ]
                             }, void 0, true, {
@@ -816,31 +798,58 @@ function CycleInsights({ cycles }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-muted-foreground",
                                 children: [
-                                    "Type: ",
+                                    t('range'),
+                                    ":",
+                                    " ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: `font-semibold ${stats.isIrregular ? 'text-yellow-600' : 'text-green-600'}`,
-                                        children: stats.isIrregular ? "Irregular" : "Regular"
-                                    }, void 0, false, {
+                                        className: "font-semibold text-foreground",
+                                        children: [
+                                            stats.minCycleLength,
+                                            "-",
+                                            stats.maxCycleLength,
+                                            " ",
+                                            t('days')
+                                        ]
+                                    }, void 0, true, {
                                         fileName: "[project]/components/cycle-insights.tsx",
-                                        lineNumber: 169,
-                                        columnNumber: 21
+                                        lineNumber: 166,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/cycle-insights.tsx",
-                                lineNumber: 168,
+                                lineNumber: 164,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: "text-muted-foreground",
+                                children: [
+                                    t('type'),
+                                    ": ",
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: `font-semibold ${stats.isIrregular ? 'text-yellow-600' : 'text-green-600'}`,
+                                        children: stats.isIrregular ? t('irregular') : t('regular')
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cycle-insights.tsx",
+                                        lineNumber: 171,
+                                        columnNumber: 28
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/cycle-insights.tsx",
+                                lineNumber: 170,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 157,
+                        lineNumber: 160,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/cycle-insights.tsx",
-                lineNumber: 154,
+                lineNumber: 157,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -851,15 +860,15 @@ function CycleInsights({ cycles }) {
                         children: "✓"
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 179,
+                        lineNumber: 181,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                         className: "font-semibold text-foreground mb-1",
-                        children: "Cycles Tracked"
+                        children: t('cyclesTracked')
                     }, void 0, false, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 180,
+                        lineNumber: 182,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -870,22 +879,27 @@ function CycleInsights({ cycles }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/cycle-insights.tsx",
-                        lineNumber: 181,
+                        lineNumber: 183,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/cycle-insights.tsx",
-                lineNumber: 178,
+                lineNumber: 180,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/cycle-insights.tsx",
-        lineNumber: 108,
+        lineNumber: 111,
         columnNumber: 5
     }, this);
 }
+_s(CycleInsights, "ot2YhC7pP10gRrIouBKIa40vomw=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$language$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLanguage"]
+    ];
+});
 _c = CycleInsights;
 var _c;
 __turbopack_context__.k.register(_c, "CycleInsights");
@@ -1025,7 +1039,7 @@ function PeriodTracker({ user }) {
                         children: "Period Tracker"
                     }, void 0, false, {
                         fileName: "[project]/components/period-tracker.tsx",
-                        lineNumber: 106,
+                        lineNumber: 107,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1033,13 +1047,13 @@ function PeriodTracker({ user }) {
                         children: "Track your menstrual cycle and patterns"
                     }, void 0, false, {
                         fileName: "[project]/components/period-tracker.tsx",
-                        lineNumber: 107,
+                        lineNumber: 108,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/period-tracker.tsx",
-                lineNumber: 105,
+                lineNumber: 106,
                 columnNumber: 7
             }, this),
             cycles.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1048,12 +1062,12 @@ function PeriodTracker({ user }) {
                     cycles: cycles
                 }, void 0, false, {
                     fileName: "[project]/components/period-tracker.tsx",
-                    lineNumber: 112,
+                    lineNumber: 113,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/period-tracker.tsx",
-                lineNumber: 111,
+                lineNumber: 112,
                 columnNumber: 9
             }, this),
             cycles.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1064,12 +1078,12 @@ function PeriodTracker({ user }) {
                     onMonthChange: setCurrentMonth
                 }, void 0, false, {
                     fileName: "[project]/components/period-tracker.tsx",
-                    lineNumber: 118,
+                    lineNumber: 119,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/period-tracker.tsx",
-                lineNumber: 117,
+                lineNumber: 118,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1087,7 +1101,7 @@ function PeriodTracker({ user }) {
                 children: showForm ? "Cancel" : "+ Log Period"
             }, void 0, false, {
                 fileName: "[project]/components/period-tracker.tsx",
-                lineNumber: 123,
+                lineNumber: 124,
                 columnNumber: 7
             }, this),
             showForm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1106,7 +1120,7 @@ function PeriodTracker({ user }) {
                                             children: "Period Start Date"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 140,
+                                            lineNumber: 141,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1120,13 +1134,13 @@ function PeriodTracker({ user }) {
                                             className: "w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 141,
+                                            lineNumber: 142,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/period-tracker.tsx",
-                                    lineNumber: 139,
+                                    lineNumber: 140,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1136,7 +1150,7 @@ function PeriodTracker({ user }) {
                                             children: "Period End Date"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 150,
+                                            lineNumber: 151,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1149,19 +1163,19 @@ function PeriodTracker({ user }) {
                                             className: "w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 151,
+                                            lineNumber: 152,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/period-tracker.tsx",
-                                    lineNumber: 149,
+                                    lineNumber: 150,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/period-tracker.tsx",
-                            lineNumber: 138,
+                            lineNumber: 139,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1171,7 +1185,7 @@ function PeriodTracker({ user }) {
                                     children: "Flow Intensity"
                                 }, void 0, false, {
                                     fileName: "[project]/components/period-tracker.tsx",
-                                    lineNumber: 161,
+                                    lineNumber: 162,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1187,7 +1201,7 @@ function PeriodTracker({ user }) {
                                             children: "Light"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 167,
+                                            lineNumber: 168,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1195,7 +1209,7 @@ function PeriodTracker({ user }) {
                                             children: "Moderate"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 168,
+                                            lineNumber: 169,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1203,7 +1217,7 @@ function PeriodTracker({ user }) {
                                             children: "Heavy"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 169,
+                                            lineNumber: 170,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1211,19 +1225,19 @@ function PeriodTracker({ user }) {
                                             children: "Very Heavy"
                                         }, void 0, false, {
                                             fileName: "[project]/components/period-tracker.tsx",
-                                            lineNumber: 170,
+                                            lineNumber: 171,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/period-tracker.tsx",
-                                    lineNumber: 162,
+                                    lineNumber: 163,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/period-tracker.tsx",
-                            lineNumber: 160,
+                            lineNumber: 161,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1233,7 +1247,7 @@ function PeriodTracker({ user }) {
                                     children: "Notes"
                                 }, void 0, false, {
                                     fileName: "[project]/components/period-tracker.tsx",
-                                    lineNumber: 175,
+                                    lineNumber: 176,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -1247,13 +1261,13 @@ function PeriodTracker({ user }) {
                                     placeholder: "Any additional notes..."
                                 }, void 0, false, {
                                     fileName: "[project]/components/period-tracker.tsx",
-                                    lineNumber: 176,
+                                    lineNumber: 177,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/period-tracker.tsx",
-                            lineNumber: 174,
+                            lineNumber: 175,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1262,18 +1276,18 @@ function PeriodTracker({ user }) {
                             children: editingId ? "Update Period" : "Save Period"
                         }, void 0, false, {
                             fileName: "[project]/components/period-tracker.tsx",
-                            lineNumber: 185,
+                            lineNumber: 186,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/period-tracker.tsx",
-                    lineNumber: 137,
+                    lineNumber: 138,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/period-tracker.tsx",
-                lineNumber: 136,
+                lineNumber: 137,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1284,7 +1298,7 @@ function PeriodTracker({ user }) {
                         children: "Your Cycles"
                     }, void 0, false, {
                         fileName: "[project]/components/period-tracker.tsx",
-                        lineNumber: 197,
+                        lineNumber: 198,
                         columnNumber: 9
                     }, this),
                     cycles.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1294,12 +1308,12 @@ function PeriodTracker({ user }) {
                             children: "No cycles logged yet. Start tracking to see your patterns!"
                         }, void 0, false, {
                             fileName: "[project]/components/period-tracker.tsx",
-                            lineNumber: 200,
+                            lineNumber: 201,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/period-tracker.tsx",
-                        lineNumber: 199,
+                        lineNumber: 200,
                         columnNumber: 11
                     }, this) : cycles.sort((a, b)=>new Date(b.startDate).getTime() - new Date(a.startDate).getTime()).map((cycle)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "bg-white border border-border rounded-lg p-4 shadow-sm",
@@ -1314,7 +1328,7 @@ function PeriodTracker({ user }) {
                                                 children: new Date(cycle.startDate).toLocaleDateString()
                                             }, void 0, false, {
                                                 fileName: "[project]/components/period-tracker.tsx",
-                                                lineNumber: 209,
+                                                lineNumber: 210,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1328,7 +1342,7 @@ function PeriodTracker({ user }) {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/period-tracker.tsx",
-                                                lineNumber: 210,
+                                                lineNumber: 211,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1340,13 +1354,13 @@ function PeriodTracker({ user }) {
                                                         children: cycle.flowIntensity
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/period-tracker.tsx",
-                                                        lineNumber: 221,
+                                                        lineNumber: 222,
                                                         columnNumber: 29
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/period-tracker.tsx",
-                                                lineNumber: 220,
+                                                lineNumber: 221,
                                                 columnNumber: 21
                                             }, this),
                                             cycle.notes && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1354,13 +1368,13 @@ function PeriodTracker({ user }) {
                                                 children: cycle.notes
                                             }, void 0, false, {
                                                 fileName: "[project]/components/period-tracker.tsx",
-                                                lineNumber: 223,
+                                                lineNumber: 224,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/period-tracker.tsx",
-                                        lineNumber: 208,
+                                        lineNumber: 209,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1372,7 +1386,7 @@ function PeriodTracker({ user }) {
                                                 children: "Edit"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/period-tracker.tsx",
-                                                lineNumber: 226,
+                                                lineNumber: 227,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1381,36 +1395,36 @@ function PeriodTracker({ user }) {
                                                 children: "Delete"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/period-tracker.tsx",
-                                                lineNumber: 232,
+                                                lineNumber: 233,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/period-tracker.tsx",
-                                        lineNumber: 225,
+                                        lineNumber: 226,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/period-tracker.tsx",
-                                lineNumber: 207,
+                                lineNumber: 208,
                                 columnNumber: 17
                             }, this)
                         }, cycle.id, false, {
                             fileName: "[project]/components/period-tracker.tsx",
-                            lineNumber: 206,
+                            lineNumber: 207,
                             columnNumber: 15
                         }, this))
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/period-tracker.tsx",
-                lineNumber: 196,
+                lineNumber: 197,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/period-tracker.tsx",
-        lineNumber: 104,
+        lineNumber: 105,
         columnNumber: 5
     }, this);
 }
@@ -2993,7 +3007,7 @@ function HealthTools({ user }) {
                         children: "🏃 Exercise"
                     }, void 0, false, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 115,
+                        lineNumber: 114,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3002,7 +3016,7 @@ function HealthTools({ user }) {
                         children: "🥗 Nutrition"
                     }, void 0, false, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 125,
+                        lineNumber: 123,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3011,7 +3025,7 @@ function HealthTools({ user }) {
                         children: "🧘 Stress Relief"
                     }, void 0, false, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 135,
+                        lineNumber: 132,
                         columnNumber: 9
                     }, this)
                 ]
@@ -3030,7 +3044,7 @@ function HealthTools({ user }) {
                                 children: "Select Date"
                             }, void 0, false, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 151,
+                                lineNumber: 147,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3040,26 +3054,26 @@ function HealthTools({ user }) {
                                 className: "px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary mb-6"
                             }, void 0, false, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 152,
+                                lineNumber: 148,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 150,
+                        lineNumber: 146,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$wellness$2d$tracker$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                         date: selectedDate
                     }, void 0, false, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 159,
+                        lineNumber: 155,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/health-tools.tsx",
-                lineNumber: 149,
+                lineNumber: 145,
                 columnNumber: 9
             }, this),
             activeTab === "exercise" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3075,7 +3089,7 @@ function HealthTools({ user }) {
                                         children: exercise.name
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 172,
+                                        lineNumber: 168,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3083,13 +3097,13 @@ function HealthTools({ user }) {
                                         children: "🏃"
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 173,
+                                        lineNumber: 169,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 171,
+                                lineNumber: 167,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3097,7 +3111,7 @@ function HealthTools({ user }) {
                                 children: exercise.description
                             }, void 0, false, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 175,
+                                lineNumber: 171,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3108,7 +3122,7 @@ function HealthTools({ user }) {
                                         children: exercise.duration
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 177,
+                                        lineNumber: 173,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3116,7 +3130,7 @@ function HealthTools({ user }) {
                                         children: exercise.difficulty
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 178,
+                                        lineNumber: 174,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3124,24 +3138,24 @@ function HealthTools({ user }) {
                                         children: exercise.phase === "all" ? "All Phases" : exercise.phase
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 179,
+                                        lineNumber: 175,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 176,
+                                lineNumber: 172,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, exercise.id, true, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 167,
+                        lineNumber: 163,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/components/health-tools.tsx",
-                lineNumber: 165,
+                lineNumber: 161,
                 columnNumber: 9
             }, this),
             activeTab === "nutrition" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3157,7 +3171,7 @@ function HealthTools({ user }) {
                                         children: meal.name
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 197,
+                                        lineNumber: 193,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3165,13 +3179,13 @@ function HealthTools({ user }) {
                                         children: "🥗"
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 198,
+                                        lineNumber: 194,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 196,
+                                lineNumber: 192,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3179,7 +3193,7 @@ function HealthTools({ user }) {
                                 children: meal.description
                             }, void 0, false, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 200,
+                                lineNumber: 196,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3190,7 +3204,7 @@ function HealthTools({ user }) {
                                         children: meal.prep
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 202,
+                                        lineNumber: 198,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3198,24 +3212,24 @@ function HealthTools({ user }) {
                                         children: meal.phase === "all" ? "All Phases" : meal.phase
                                     }, void 0, false, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 203,
+                                        lineNumber: 199,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 201,
+                                lineNumber: 197,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, meal.id, true, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 192,
+                        lineNumber: 188,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/components/health-tools.tsx",
-                lineNumber: 190,
+                lineNumber: 186,
                 columnNumber: 9
             }, this),
             activeTab === "stress" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3229,7 +3243,7 @@ function HealthTools({ user }) {
                                 children: "Breathing Exercises"
                             }, void 0, false, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 216,
+                                lineNumber: 212,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3243,7 +3257,7 @@ function HealthTools({ user }) {
                                                 children: "Box Breathing (4-4-4-4)"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 219,
+                                                lineNumber: 215,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3251,13 +3265,13 @@ function HealthTools({ user }) {
                                                 children: "Inhale for 4, hold for 4, exhale for 4, hold for 4. Repeat 5 times."
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 220,
+                                                lineNumber: 216,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 218,
+                                        lineNumber: 214,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3268,7 +3282,7 @@ function HealthTools({ user }) {
                                                 children: "4-7-8 Breathing"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 225,
+                                                lineNumber: 221,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3276,13 +3290,13 @@ function HealthTools({ user }) {
                                                 children: "Inhale for 4, hold for 7, exhale for 8. Repeat 4 times."
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 226,
+                                                lineNumber: 222,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 224,
+                                        lineNumber: 220,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3293,7 +3307,7 @@ function HealthTools({ user }) {
                                                 children: "Diaphragmatic Breathing"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 229,
+                                                lineNumber: 225,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3301,25 +3315,25 @@ function HealthTools({ user }) {
                                                 children: "Deep belly breathing to activate the parasympathetic nervous system."
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 230,
+                                                lineNumber: 226,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 228,
+                                        lineNumber: 224,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 217,
+                                lineNumber: 213,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 215,
+                        lineNumber: 211,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3330,7 +3344,7 @@ function HealthTools({ user }) {
                                 children: "Guided Meditations"
                             }, void 0, false, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 238,
+                                lineNumber: 234,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3344,7 +3358,7 @@ function HealthTools({ user }) {
                                                 children: "Pain Management Meditation"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 241,
+                                                lineNumber: 237,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3352,13 +3366,13 @@ function HealthTools({ user }) {
                                                 children: "10 minutes - Reduce period pain through guided visualization"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 242,
+                                                lineNumber: 238,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 240,
+                                        lineNumber: 236,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3369,12 +3383,37 @@ function HealthTools({ user }) {
                                                 children: "Sleep Meditation"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 247,
+                                                lineNumber: 243,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-sm text-muted-foreground",
                                                 children: "15 minutes - Relax and prepare for restful sleep"
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/health-tools.tsx",
+                                                lineNumber: 244,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/health-tools.tsx",
+                                        lineNumber: 242,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        className: "w-full text-left p-4 bg-accent-purple/10 hover:bg-accent-purple/20 rounded-lg transition-smooth",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "font-semibold text-foreground",
+                                                children: "Stress Relief Meditation"
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/health-tools.tsx",
+                                                lineNumber: 247,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-sm text-muted-foreground",
+                                                children: "8 minutes - Calm your mind and reduce anxiety"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
                                                 lineNumber: 248,
@@ -3391,7 +3430,7 @@ function HealthTools({ user }) {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "font-semibold text-foreground",
-                                                children: "Stress Relief Meditation"
+                                                children: "Body Scan Meditation"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
                                                 lineNumber: 251,
@@ -3399,7 +3438,7 @@ function HealthTools({ user }) {
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-sm text-muted-foreground",
-                                                children: "8 minutes - Calm your mind and reduce anxiety"
+                                                children: "12 minutes - Release tension from your body"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
                                                 lineNumber: 252,
@@ -3410,42 +3449,17 @@ function HealthTools({ user }) {
                                         fileName: "[project]/components/health-tools.tsx",
                                         lineNumber: 250,
                                         columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                        className: "w-full text-left p-4 bg-accent-purple/10 hover:bg-accent-purple/20 rounded-lg transition-smooth",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "font-semibold text-foreground",
-                                                children: "Body Scan Meditation"
-                                            }, void 0, false, {
-                                                fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 255,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-sm text-muted-foreground",
-                                                children: "12 minutes - Release tension from your body"
-                                            }, void 0, false, {
-                                                fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 256,
-                                                columnNumber: 17
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 254,
-                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 239,
+                                lineNumber: 235,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 237,
+                        lineNumber: 233,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3456,7 +3470,7 @@ function HealthTools({ user }) {
                                 children: "Quick Wellness Tips"
                             }, void 0, false, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 262,
+                                lineNumber: 258,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3470,11 +3484,35 @@ function HealthTools({ user }) {
                                                 children: "•"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 265,
+                                                lineNumber: 261,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Take short breaks every hour to stretch and breathe"
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/health-tools.tsx",
+                                                lineNumber: 262,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/health-tools.tsx",
+                                        lineNumber: 260,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                        className: "flex items-start gap-2",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "text-primary mt-1",
+                                                children: "•"
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/health-tools.tsx",
+                                                lineNumber: 265,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                children: "Practice progressive muscle relaxation before bed"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
                                                 lineNumber: 266,
@@ -3498,7 +3536,7 @@ function HealthTools({ user }) {
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: "Practice progressive muscle relaxation before bed"
+                                                children: "Limit caffeine intake, especially during luteal phase"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
                                                 lineNumber: 270,
@@ -3522,7 +3560,7 @@ function HealthTools({ user }) {
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: "Limit caffeine intake, especially during luteal phase"
+                                                children: "Spend time in nature for stress relief"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
                                                 lineNumber: 274,
@@ -3546,7 +3584,7 @@ function HealthTools({ user }) {
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: "Spend time in nature for stress relief"
+                                                children: "Practice journaling to process emotions"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/health-tools.tsx",
                                                 lineNumber: 278,
@@ -3557,47 +3595,23 @@ function HealthTools({ user }) {
                                         fileName: "[project]/components/health-tools.tsx",
                                         lineNumber: 276,
                                         columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                        className: "flex items-start gap-2",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-primary mt-1",
-                                                children: "•"
-                                            }, void 0, false, {
-                                                fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 281,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: "Practice journaling to process emotions"
-                                            }, void 0, false, {
-                                                fileName: "[project]/components/health-tools.tsx",
-                                                lineNumber: 282,
-                                                columnNumber: 17
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/components/health-tools.tsx",
-                                        lineNumber: 280,
-                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/health-tools.tsx",
-                                lineNumber: 263,
+                                lineNumber: 259,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/health-tools.tsx",
-                        lineNumber: 261,
+                        lineNumber: 257,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/health-tools.tsx",
-                lineNumber: 214,
+                lineNumber: 210,
                 columnNumber: 9
             }, this)
         ]
@@ -4631,9 +4645,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$thread$2d$deta
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$firebase$2f$firestore$2f$dist$2f$esm$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/firebase/firestore/dist/esm/index.esm.js [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@firebase/firestore/dist/index.esm.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$firebase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/firebase.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user.js [app-client] (ecmascript) <export default as User>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$thumbs$2d$up$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ThumbsUp$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/thumbs-up.js [app-client] (ecmascript) <export default as ThumbsUp>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$message$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MessageCircle$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/message-circle.js [app-client] (ecmascript) <export default as MessageCircle>");
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -4650,7 +4668,7 @@ function Community({ user }) {
         content: "",
         category: "general"
     });
-    useEffect({
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Community.useEffect": ()=>{
             // Real-time listener for posts
             const q = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["query"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["collection"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$firebase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["db"], "posts"), (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["orderBy"])("timestamp", "desc"));
@@ -4688,8 +4706,7 @@ function Community({ user }) {
                 content: formData.content,
                 category: formData.category,
                 author: user.name || "Anonymous",
-                // Basic random avatar logic based on name length if no real avatar
-                avatar: "👤",
+                avatar: "user",
                 timestamp: new Date().toISOString(),
                 likes: 0,
                 replies: []
@@ -4988,8 +5005,14 @@ function Community({ user }) {
                             className: "flex gap-4",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "text-3xl",
-                                    children: thread.avatar
+                                    className: "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"], {
+                                        className: "w-6 h-6 text-primary"
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/community.tsx",
+                                        lineNumber: 197,
+                                        columnNumber: 19
+                                    }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/components/community.tsx",
                                     lineNumber: 196,
@@ -5008,7 +5031,7 @@ function Community({ user }) {
                                                             children: thread.category
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/community.tsx",
-                                                            lineNumber: 200,
+                                                            lineNumber: 202,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -5016,13 +5039,13 @@ function Community({ user }) {
                                                             children: thread.title
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/community.tsx",
-                                                            lineNumber: 203,
+                                                            lineNumber: 205,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/community.tsx",
-                                                    lineNumber: 199,
+                                                    lineNumber: 201,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5030,13 +5053,13 @@ function Community({ user }) {
                                                     children: thread.timestamp
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/community.tsx",
-                                                    lineNumber: 205,
+                                                    lineNumber: 207,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/community.tsx",
-                                            lineNumber: 198,
+                                            lineNumber: 200,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5044,7 +5067,7 @@ function Community({ user }) {
                                             children: thread.content
                                         }, void 0, false, {
                                             fileName: "[project]/components/community.tsx",
-                                            lineNumber: 207,
+                                            lineNumber: 209,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5058,48 +5081,64 @@ function Community({ user }) {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/community.tsx",
-                                                    lineNumber: 209,
+                                                    lineNumber: 211,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "flex gap-4 text-muted-foreground",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            className: "flex items-center gap-1",
                                                             children: [
-                                                                "👍 ",
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$thumbs$2d$up$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ThumbsUp$3e$__["ThumbsUp"], {
+                                                                    className: "w-4 h-4"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/components/community.tsx",
+                                                                    lineNumber: 213,
+                                                                    columnNumber: 65
+                                                                }, this),
+                                                                " ",
                                                                 thread.likes
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/components/community.tsx",
-                                                            lineNumber: 211,
+                                                            lineNumber: 213,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            className: "flex items-center gap-1",
                                                             children: [
-                                                                "💬 ",
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$message$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MessageCircle$3e$__["MessageCircle"], {
+                                                                    className: "w-4 h-4"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/components/community.tsx",
+                                                                    lineNumber: 214,
+                                                                    columnNumber: 65
+                                                                }, this),
+                                                                " ",
                                                                 thread.replies.length
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/components/community.tsx",
-                                                            lineNumber: 212,
+                                                            lineNumber: 214,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/community.tsx",
-                                                    lineNumber: 210,
+                                                    lineNumber: 212,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/community.tsx",
-                                            lineNumber: 208,
+                                            lineNumber: 210,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/community.tsx",
-                                    lineNumber: 197,
+                                    lineNumber: 199,
                                     columnNumber: 17
                                 }, this)
                             ]
@@ -5132,8 +5171,8 @@ function Community({ user }) {
                 }
             }, void 0, false, {
                 fileName: "[project]/components/community.tsx",
-                lineNumber: 224,
-                columnNumber: 9
+                lineNumber: 227,
+                columnNumber: 11
             }, this)
         ]
     }, void 0, true, {

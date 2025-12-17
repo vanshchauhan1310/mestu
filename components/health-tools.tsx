@@ -104,41 +104,37 @@ export default function HealthTools({ user }: HealthToolsProps) {
       <div className="flex gap-4 mb-8 border-b border-border overflow-x-auto">
         <button
           onClick={() => setActiveTab("wellness")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${
-            activeTab === "wellness"
+          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "wellness"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
-          }`}
+            }`}
         >
           💪 Wellness
         </button>
         <button
           onClick={() => setActiveTab("exercise")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${
-            activeTab === "exercise"
+          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "exercise"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
-          }`}
+            }`}
         >
           🏃 Exercise
         </button>
         <button
           onClick={() => setActiveTab("nutrition")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${
-            activeTab === "nutrition"
+          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "nutrition"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
-          }`}
+            }`}
         >
           🥗 Nutrition
         </button>
         <button
           onClick={() => setActiveTab("stress")}
-          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${
-            activeTab === "stress"
+          className={`px-4 py-3 font-semibold transition-smooth border-b-2 whitespace-nowrap ${activeTab === "stress"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
-          }`}
+            }`}
         >
           🧘 Stress Relief
         </button>

@@ -12,6 +12,7 @@ interface PeriodTrackerProps {
 
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
+import { useLanguage } from "./language-context"
 
 // ... imports
 

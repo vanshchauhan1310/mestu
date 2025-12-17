@@ -1,10 +1,13 @@
 "use client"
 
+import { useLanguage } from "./language-context"
+
 interface CycleInsightsProps {
   cycles: any[]
 }
 
 export default function CycleInsights({ cycles }: CycleInsightsProps) {
+  const { t } = useLanguage()
   // Helper helper: Standard Deviation
   const getStandardDeviation = (array: number[]) => {
     if (array.length === 0) return 0
@@ -110,7 +113,7 @@ export default function CycleInsights({ cycles }: CycleInsightsProps) {
       {phase && (
         <div className={`${phase.color} text-white rounded-lg p-6 shadow-sm`}>
           <div className="text-4xl mb-2">{phase.emoji}</div>
-          <h3 className="font-semibold mb-1">Current Phase</h3>
+          <h3 className="font-semibold mb-1">{t('currentPhase')}</h3>
           <p className="text-sm opacity-90">{phase.phase}</p>
         </div>
       )}
@@ -122,11 +125,11 @@ export default function CycleInsights({ cycles }: CycleInsightsProps) {
             <div className="text-4xl">📅</div>
             {stats && (
               <div className={`px-2 py-1 rounded-full text-xs font-bold ${stats.confidence > 80 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                {Math.round(stats.confidence)}% Confidence
+                {Math.round(stats.confidence)}% {t('confidence')}
               </div>
             )}
           </div>
-          <h3 className="font-semibold text-foreground mb-1">Predicted Start</h3>
+          <h3 className="font-semibold text-foreground mb-1">{t('predictedStart')}</h3>
 
           {prediction.isIrregular ? (
             <div>
@@ -134,7 +137,7 @@ export default function CycleInsights({ cycles }: CycleInsightsProps) {
                 {prediction.startRange.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {prediction.endRange.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Due to irregularity (+/- {prediction.margin} days)
+                Due to irregularity (+/- {prediction.margin} {t('days')})
               </p>
             </div>
           ) : (
@@ -144,7 +147,7 @@ export default function CycleInsights({ cycles }: CycleInsightsProps) {
           )}
 
           <p className="text-sm text-muted-foreground mt-2">
-            {prediction.daysUntil > 0 ? `In approx ${prediction.daysUntil} days` : 'Expected soon'}
+            {prediction.daysUntil > 0 ? `${t('inApprox')} ${prediction.daysUntil} ${t('days')}` : t('expectedSoon')}
           </p>
         </div>
       )}
@@ -153,21 +156,20 @@ export default function CycleInsights({ cycles }: CycleInsightsProps) {
       {stats && (
         <div className="bg-primary-light/10 border-2 border-primary-light rounded-lg p-6">
           <div className="text-4xl mb-2">📊</div>
-          <h3 className="font-semibold text-foreground mb-3">Cycle Statistics</h3>
+          <h3 className="font-semibold text-foreground mb-3">{t('cycleStats')}</h3>
           <div className="space-y-2 text-sm">
             <p className="text-muted-foreground">
-              Average: <span className="font-semibold text-foreground">{stats.avgCycleLength} days</span>
+              {t('average')}: <span className="font-semibold text-foreground">{stats.avgCycleLength} {t('days')}</span>
             </p>
             <p className="text-muted-foreground">
-              Range:{" "}
+              {t('range')}:{" "}
               <span className="font-semibold text-foreground">
-                {stats.minCycleLength}-{stats.maxCycleLength} days
-                {stats.minCycleLength}-{stats.maxCycleLength} days
+                {stats.minCycleLength}-{stats.maxCycleLength} {t('days')}
               </span>
             </p>
             <p className="text-muted-foreground">
-              Type: <span className={`font-semibold ${stats.isIrregular ? 'text-yellow-600' : 'text-green-600'}`}>
-                {stats.isIrregular ? "Irregular" : "Regular"}
+              {t('type')}: <span className={`font-semibold ${stats.isIrregular ? 'text-yellow-600' : 'text-green-600'}`}>
+                {stats.isIrregular ? t('irregular') : t('regular')}
               </span>
             </p>
           </div>
@@ -177,7 +179,7 @@ export default function CycleInsights({ cycles }: CycleInsightsProps) {
       {/* Total Cycles Tracked */}
       <div className="bg-accent-warm/10 border-2 border-accent-warm rounded-lg p-6">
         <div className="text-4xl mb-2">✓</div>
-        <h3 className="font-semibold text-foreground mb-1">Cycles Tracked</h3>
+        <h3 className="font-semibold text-foreground mb-1">{t('cyclesTracked')}</h3>
         <p className="text-sm text-muted-foreground">{cycles.length} cycles logged</p>
       </div>
     </div>

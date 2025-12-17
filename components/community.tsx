@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ThreadDetail from "./thread-detail"
 
 interface CommunityProps {
@@ -11,6 +11,7 @@ interface CommunityProps {
 
 import { collection, addDoc, query, orderBy, onSnapshot, where } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
+import { User, ThumbsUp, MessageCircle, Send } from "lucide-react"
 
 export default function Community({ user }: CommunityProps) {
   const [threads, setThreads] = useState<any[]>([])
@@ -54,9 +55,8 @@ export default function Community({ user }: CommunityProps) {
         title: formData.title,
         content: formData.content,
         category: formData.category,
-        author: user.name || "Anonymous", // Use real name from props
-        // Basic random avatar logic based on name length if no real avatar
-        avatar: "👤",
+        author: user.name || "Anonymous",
+        avatar: "user", // Marker for icon
         timestamp: new Date().toISOString(),
         likes: 0,
         replies: []
@@ -193,7 +193,9 @@ export default function Community({ user }: CommunityProps) {
               className="bg-white border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-smooth cursor-pointer"
             >
               <div className="flex gap-4">
-                <div className="text-3xl">{thread.avatar}</div>
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <User className="w-6 h-6 text-primary" />
+                </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -208,8 +210,8 @@ export default function Community({ user }: CommunityProps) {
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">By {thread.author}</span>
                     <div className="flex gap-4 text-muted-foreground">
-                      <span>👍 {thread.likes}</span>
-                      <span>💬 {thread.replies.length}</span>
+                      <span className="flex items-center gap-1"><ThumbsUp className="w-4 h-4" /> {thread.likes}</span>
+                      <span className="flex items-center gap-1"><MessageCircle className="w-4 h-4" /> {thread.replies.length}</span>
                     </div>
                   </div>
                 </div>
@@ -220,15 +222,17 @@ export default function Community({ user }: CommunityProps) {
       </div>
 
       {/* Thread Detail Modal */}
-      {selectedThread && (
-        <ThreadDetail
-          thread={selectedThread}
-          onClose={() => setSelectedThread(null)}
-          onAddReply={(reply) => {
-            setSelectedThread({ ...selectedThread, replies: [...selectedThread.replies, reply] })
-          }}
-        />
-      )}
-    </div>
+      {
+        selectedThread && (
+          <ThreadDetail
+            thread={selectedThread}
+            onClose={() => setSelectedThread(null)}
+            onAddReply={(reply) => {
+              setSelectedThread({ ...selectedThread, replies: [...selectedThread.replies, reply] })
+            }}
+          />
+        )
+      }
+    </div >
   )
 }

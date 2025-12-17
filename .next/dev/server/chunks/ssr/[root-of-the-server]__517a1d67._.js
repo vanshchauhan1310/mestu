@@ -417,7 +417,20 @@ const translations = {
         saving: "Saving Profile...",
         back: "Back",
         step: "Step",
-        of: "of"
+        of: "of",
+        // Cycle Insights
+        currentPhase: "Current Phase",
+        predictedStart: "Predicted Start",
+        confidence: "Confidence",
+        cycleStats: "Cycle Statistics",
+        average: "Average",
+        range: "Range",
+        type: "Type",
+        regular: "Regular",
+        irregular: "Irregular",
+        inApprox: "In approx",
+        days: "days",
+        expectedSoon: "Expected soon"
     },
     hi: {
         profile: "प्रोफ़ाइल",
@@ -449,7 +462,20 @@ const translations = {
         saving: "प्रोफ़ाइल सहेज रहा है...",
         back: "वापस",
         step: "चरण",
-        of: "का"
+        of: "का",
+        // Cycle Insights
+        currentPhase: "वर्तमान चरण",
+        predictedStart: "अनुमानित शुरुआत",
+        confidence: "विश्वास",
+        cycleStats: "चक्र आँकड़े",
+        average: "औसत",
+        range: "रेंज",
+        type: "प्रकार",
+        regular: "नियमित",
+        irregular: "अनियमित",
+        inApprox: "लगभग",
+        days: "दिनों में",
+        expectedSoon: "जल्द अपेक्षित"
     },
     mr: {
         profile: "प्रोफाइल",
@@ -481,7 +507,20 @@ const translations = {
         saving: "प्रोफाइल जतन करत आहे...",
         back: "मागे",
         step: "चरण",
-        of: "पैकी"
+        of: "पैकी",
+        // Cycle Insights
+        currentPhase: "साधरण चरण",
+        predictedStart: "अंदाजित प्रारंभ",
+        confidence: "विश्वास",
+        cycleStats: "चक्र आकडेवारी",
+        average: "सरासरी",
+        range: "श्रेणी",
+        type: "प्रकार",
+        regular: "नियमित",
+        irregular: "अनियमित",
+        inApprox: "सुमारे",
+        days: "दिवसांत",
+        expectedSoon: "लवकरच अपेक्षित"
     }
 };
 }),
