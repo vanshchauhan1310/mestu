@@ -146,6 +146,26 @@ export default function HomeQuickStats({ user }: HomeQuickStatsProps) {
         </div>
         <p className="text-xs text-muted-foreground mt-1">Typical level</p>
       </div>
+
+      {/* Symptom Forecast (New) */}
+      <div className="col-span-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-5 shadow-sm">
+        <div className="flex items-start gap-3">
+          <div className="bg-blue-100 p-2 rounded-full mt-1">
+            <Activity className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-blue-900 text-sm uppercase tracking-wide mb-1">Today's Forecast</h3>
+            <p className="text-blue-800 font-medium text-lg leading-tight">
+              {cycleData.phase === "Menstruation" ? "Cramps & fatigue likely. Keep warm." :
+                cycleData.phase === "Follicular" ? "Energy rising! Great for exercise." :
+                  cycleData.phase === "Ovulation" ? "Peak confidence & energy." :
+                    cycleData.phase === "Luteal" ? "PMS risk. Be kind to yourself." :
+                      cycleData.phase === "Setup Needed" ? "Complete profile to see predictions." :
+                        "Tracking helps predict symptoms."}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
