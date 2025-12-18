@@ -120,7 +120,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 pb-24">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-foreground mb-2">{t('healthTools')}</h2>
         <p className="text-muted-foreground">{t('healthToolsDesc')}</p>
@@ -146,8 +146,8 @@ export default function HealthTools({ user }: HealthToolsProps) {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 min-w-[120px] px-4 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap ${activeTab === tab.id
-                ? "bg-white text-slate-900 shadow-sm ring-1 ring-black/5"
-                : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+              ? "bg-white text-slate-900 shadow-sm ring-1 ring-black/5"
+              : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               }`}
           >
             <span className={activeTab === tab.id ? tab.color : ""}>{tab.label.split(" ")[0]}</span> {tab.label.split(" ").slice(1).join(" ")}

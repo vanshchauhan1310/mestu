@@ -1,7 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Droplets, Moon, Activity, Plus, Minus, Save, Flame, BedDouble } from "lucide-react"
+import { Droplets, Moon, Activity, Plus, Minus, Check, Trophy } from "lucide-react"
+import { doc, setDoc, getDoc } from "firebase/firestore"
+import { db, auth } from "@/lib/firebase"
 
 interface WellnessTrackerProps {
   date: string
@@ -11,127 +13,170 @@ export default function WellnessTracker({ date }: WellnessTrackerProps) {
   const [hydration, setHydration] = useState(0)
   const [sleep, setSleep] = useState(7)
   const [exercise, setExercise] = useState(0)
+
+  const [loading, setLoading] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
 
+  // Confetti/Success States
+  const [showGoalSuccess, setShowGoalSuccess] = useState<string | null>(null)
+
   useEffect(() => {
-    const saved = localStorage.getItem(`saukhya_wellness_${date}`)
-    if (saved) {
-      const data = JSON.parse(saved)
-      setHydration(data.hydration || 0)
-      setSleep(data.sleep ? parseFloat(data.sleep) : 7)
-      setExercise(data.exercise ? parseInt(data.exercise) : 0)
-    } else {
-      // Reset defaults for new date
-      setHydration(0)
-      setSleep(7)
-      setExercise(0)
+    const fetchData = async () => {
+      if (!auth.currentUser) return
+      try {
+        const docRef = doc(db, "users", auth.currentUser.uid, "wellness_logs", date)
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          const data = docSnap.data()
+          setHydration(data.hydration || 0)
+          setSleep(data.sleep || 7)
+          setExercise(data.exercise || 0)
+        } else {
+          // Reset
+          setHydration(0)
+          setSleep(7)
+          setExercise(0)
+        }
+      } catch (e) {
+        console.error("Error fetching logs", e)
+      }
     }
-    setIsSaved(false)
+    fetchData()
   }, [date])
 
-  const handleSave = () => {
-    const data = { hydration, sleep, exercise, date }
-    localStorage.setItem(`saukhya_wellness_${date}`, JSON.stringify(data))
-    setIsSaved(true)
-    setTimeout(() => setIsSaved(false), 2000)
+  const handleSave = async (autoData?: any) => {
+    if (!auth.currentUser) return
+
+    const dataToSave = autoData || { hydration, sleep, exercise }
+
+    try {
+      setLoading(true)
+      await setDoc(doc(db, "users", auth.currentUser.uid, "wellness_logs", date), {
+        ...dataToSave,
+        date // ensure date is saved
+      }, { merge: true })
+
+      setIsSaved(true)
+      setTimeout(() => setIsSaved(false), 2000)
+    } catch (e) {
+      console.error("Save failed", e)
+    } finally {
+      setLoading(false)
+    }
   }
 
+  // Auto-trigger goals
+  useEffect(() => {
+    if (hydration === 8) setShowGoalSuccess("Hydration")
+    if (sleep === 8) setShowGoalSuccess("Sleep")
+    if (exercise === 30) setShowGoalSuccess("Exercise")
+
+    if (showGoalSuccess) {
+      const timer = setTimeout(() => setShowGoalSuccess(null), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [hydration, sleep, exercise])
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="space-y-4">
 
-        {/* Hydration Card - Visual Water Tracking */}
-        <div className="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-20"><Droplets className="w-24 h-24" /></div>
+      {/* Success Popup */}
+      {showGoalSuccess && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in slide-in-from-bottom-5">
+          <div className="bg-yellow-400 text-yellow-900 font-bold px-6 py-3 rounded-full shadow-xl flex items-center gap-2">
+            <Trophy className="w-5 h-5 fill-yellow-700" />
+            {showGoalSuccess} Goal Met!
+          </div>
+        </div>
+      )}
 
-          <h3 className="font-bold text-lg mb-1 flex items-center gap-2 relative z-10"><Droplets className="w-5 h-5" /> Hydration</h3>
-          <p className="text-blue-100 text-xs font-medium mb-6 relative z-10">Daily Goal: 8 Glasses</p>
+      {/* COMPACT CARDS GRID */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
 
-          <div className="flex items-center justify-between relative z-10">
-            <div className="text-5xl font-black">{hydration}</div>
-            <div className="flex flex-col gap-2">
-              <button onClick={() => setHydration(h => h + 1)} className="bg-white text-blue-500 p-3 rounded-xl hover:scale-105 transition-transform shadow-lg">
-                <Plus className="w-6 h-6" />
-              </button>
-              <button onClick={() => setHydration(h => Math.max(0, h - 1))} className="bg-blue-600/50 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors">
-                <Minus className="w-4 h-4" />
-              </button>
+        {/* Hydration - BLUE THEME */}
+        <div className="bg-gradient-to-br from-[#0096c7] to-[#48cae4] rounded-2xl p-4 text-white shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-start mb-2">
+            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+              <Droplets className="w-5 h-5" />
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-black leading-none">{hydration}</p>
+              <p className="text-[10px] opacity-80 uppercase font-bold">Glasses</p>
             </div>
           </div>
 
-          {/* Visual Drops */}
-          <div className="mt-6 flex gap-1 flex-wrap relative z-10 h-8">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className={`h-8 flex-1 rounded-full transition-all duration-500 ${i < hydration ? "bg-white" : "bg-blue-900/20"}`}></div>
-            ))}
+          <div className="flex gap-2 mt-4">
+            <button onClick={() => { setHydration(h => h + 1); handleSave({ hydration: hydration + 1, sleep, exercise }) }}
+              className="flex-1 bg-white/20 hover:bg-white/30 rounded-lg p-2 flex items-center justify-center transition-colors">
+              <Plus className="w-4 h-4" />
+            </button>
+            <button onClick={() => { setHydration(h => Math.max(0, h - 1)); handleSave({ hydration: Math.max(0, hydration - 1), sleep, exercise }) }}
+              className="flex-1 bg-black/10 hover:bg-black/20 rounded-lg p-2 flex items-center justify-center transition-colors">
+              <Minus className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Sleep Card - Slider Interactive */}
-        <div className="bg-white border border-indigo-50 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-4 -mt-4 z-0"></div>
-
-          <div className="relative z-10">
-            <h3 className="font-bold text-gray-800 text-lg mb-1 flex items-center gap-2"><Moon className="w-5 h-5 text-indigo-500" /> Sleep</h3>
-            <p className="text-gray-400 text-xs mb-6">Last Night's Rest</p>
-
-            <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-4xl font-black text-indigo-900">{sleep}</span>
-              <span className="text-sm font-bold text-gray-400">hours</span>
+        {/* Sleep - BLUE THEME (Requested Uniformity) */}
+        <div className="bg-gradient-to-br from-[#4361ee] to-[#4cc9f0] rounded-2xl p-4 text-white shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-start mb-2">
+            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+              <Moon className="w-5 h-5" />
             </div>
-
-            <input
-              type="range"
-              min="4" max="12" step="0.5"
-              value={sleep}
-              onChange={(e) => setSleep(parseFloat(e.target.value))}
-              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-            />
-            <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium">
-              <span>4h</span>
-              <span>8h</span>
-              <span>12h</span>
+            <div className="text-right">
+              <p className="text-2xl font-black leading-none">{sleep}</p>
+              <p className="text-[10px] opacity-80 uppercase font-bold">Hours</p>
             </div>
+          </div>
+
+          <input
+            type="range" min="4" max="12" step="0.5" value={sleep}
+            onChange={(e) => {
+              setSleep(parseFloat(e.target.value))
+              // don't auto-save slider excessively, rely on manual save or effect debounce if needed
+            }}
+            onMouseUp={() => handleSave()}
+            onTouchEnd={() => handleSave()}
+            className="w-full h-1 bg-black/20 rounded-full appearance-none cursor-pointer mt-4 accent-white"
+          />
+        </div>
+
+        {/* Activity - BLUE THEME (Requested Uniformity) */}
+        <div className="col-span-2 md:col-span-1 bg-gradient-to-br from-[#3f37c9] to-[#4361ee] rounded-2xl p-4 text-white shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-start mb-2">
+            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+              <Activity className="w-5 h-5" />
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-black leading-none">{exercise}</p>
+              <p className="text-[10px] opacity-80 uppercase font-bold">Mins</p>
+            </div>
+          </div>
+
+          <div className="flex gap-2 mt-4">
+            <button onClick={() => { setExercise(e => e + 15); handleSave({ hydration, sleep, exercise: exercise + 15 }) }}
+              className="flex-1 bg-white/20 hover:bg-white/30 rounded-lg py-2 text-xs font-bold transition-all">
+              +15 Min
+            </button>
+            <button onClick={() => { setExercise(e => Math.max(0, e - 15)); handleSave({ hydration, sleep, exercise: Math.max(0, exercise - 15) }) }}
+              className="w-10 bg-black/10 hover:bg-black/20 rounded-lg flex items-center justify-center">
+              <Minus className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Exercise Card - Activity Ring Style */}
-        <div className="bg-white border border-emerald-50 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-          <div className="absolute bottom-0 right-0 w-32 h-32 bg-emerald-50/50 rounded-tl-full -mr-8 -mb-8 z-0"></div>
-
-          <div className="relative z-10">
-            <h3 className="font-bold text-gray-800 text-lg mb-1 flex items-center gap-2"><Flame className="w-5 h-5 text-emerald-500" /> Activity</h3>
-            <p className="text-gray-400 text-xs mb-6">Movement Today</p>
-
-            <div className="flex items-center gap-4">
-              <div className="relative w-24 h-24 flex items-center justify-center">
-                {/* Simple SVG Ring */}
-                <svg className="w-full h-full transform -rotate-90">
-                  <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-emerald-50" />
-                  <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray={251.2} strokeDashoffset={251.2 - (251.2 * Math.min(exercise, 60)) / 60} className="text-emerald-500 transition-all duration-1000 ease-out" strokeLinecap="round" />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center flex-col">
-                  <span className="text-2xl font-bold text-emerald-900">{exercise}</span>
-                  <span className="text-[10px] uppercase font-bold text-emerald-400">Min</span>
-                </div>
-              </div>
-              <div className="flex-1 space-y-2">
-                <button onClick={() => setExercise(e => e + 15)} className="w-full py-2 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg hover:bg-emerald-100 transition-colors">+ 15 min</button>
-                <button onClick={() => setExercise(e => Math.max(0, e - 15))} className="w-full py-2 border border-gray-100 text-gray-400 text-xs font-bold rounded-lg hover:bg-gray-50 transition-colors">- 15 min</button>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <button
-        onClick={handleSave}
-        className={`w-full py-4 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-2 ${isSaved
-            ? "bg-green-500 text-white shadow-green-500/30 scale-[0.99]"
-            : "bg-gray-900 text-white hover:bg-gray-800 shadow-gray-900/20 hover:-translate-y-0.5"
+        onClick={() => handleSave()}
+        disabled={loading}
+        className={`w-full py-3 rounded-xl font-bold text-sm transition-all shadow-lg flex items-center justify-center gap-2 ${isSaved
+          ? "bg-green-500 text-white shadow-green-500/30"
+          : "bg-gray-900 text-white hover:bg-gray-800"
           }`}
       >
-        {isSaved ? "Saved Successfully!" : "Save Wellness Data"}
+        {isSaved ? <><Check className="w-4 h-4" /> Saved</> : "Save Wellness Data"}
       </button>
     </div>
   )
