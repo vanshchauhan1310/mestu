@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Droplets, Smile, Frown, Meh, Zap, CloudFog, BatteryLow, Theater, Brain, Check, Save } from "lucide-react"
+import { X, Droplets, Smile, Frown, Meh, Zap, CloudFog, BatteryLow, Theater, Brain, Check, Save, Moon, Activity, Plus, Minus } from "lucide-react"
 import { doc, setDoc, getDoc } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { format } from "date-fns"
@@ -36,7 +36,10 @@ export default function DailyLogModal({ isOpen, onClose, date, currentData, onSa
         flowIntensity: "", // light, medium, heavy
         symptoms: [] as string[],
         mood: "",
-        notes: ""
+        notes: "",
+        hydration: 0,
+        sleep: 7,
+        exercise: 0
     })
 
     // Load initial data
@@ -47,11 +50,21 @@ export default function DailyLogModal({ isOpen, onClose, date, currentData, onSa
                     flowIntensity: currentData.flowIntensity || "",
                     symptoms: currentData.symptoms || [],
                     mood: currentData.mood || "",
-                    notes: currentData.notes || ""
+                    notes: currentData.notes || "",
+                    hydration: currentData.hydration || 0,
+                    sleep: currentData.sleep || 7,
+                    exercise: currentData.exercise || 0
                 })
             } else {
-                // Reset if no data passed, or fetch specifically if needed (but parent usually passes it)
-                setFormData({ flowIntensity: "", symptoms: [], mood: "", notes: "" })
+                setFormData({
+                    flowIntensity: "",
+                    symptoms: [],
+                    mood: "",
+                    notes: "",
+                    hydration: 0,
+                    sleep: 7,
+                    exercise: 0
+                })
             }
         }
     }, [isOpen, currentData])
@@ -88,21 +101,103 @@ export default function DailyLogModal({ isOpen, onClose, date, currentData, onSa
 
     return (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300 max-h-[90vh] flex flex-col">
+            <div className="bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300 max-h-[90vh] flex flex-col">
 
                 {/* Header */}
-                <div className="flex justify-between items-center p-4 border-b border-gray-100">
+                <div className="flex justify-between items-center p-6 border-b border-gray-100">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">Daily Log</h2>
                         <p className="text-sm text-gray-500">{format(date, "EEEE, MMMM do")}</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full text-gray-500">
+                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors">
                         <X className="w-6 h-6" />
                     </button>
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-8">
+                <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+
+                    {/* Wellness Stats Grid */}
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3">Daily Wellness</h3>
+                        <div className="grid grid-cols-2 gap-3">
+
+                            {/* Hydration */}
+                            <div className="bg-[#e0f7fa] rounded-2xl p-4 text-[#006064] relative overflow-hidden">
+                                <div className="flex justify-between items-start mb-2">
+                                    <div className="bg-white/40 p-1.5 rounded-xl backdrop-blur-sm">
+                                        <Droplets className="w-4 h-4" />
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-xl font-black leading-none">{formData.hydration}</p>
+                                        <p className="text-[10px] opacity-80 uppercase font-bold">Glasses</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2 mt-2">
+                                    <button
+                                        onClick={() => setFormData({ ...formData, hydration: Math.max(0, formData.hydration - 1) })}
+                                        className="w-8 h-8 flex items-center justify-center bg-white/40 rounded-lg hover:bg-white/60 transition-colors"
+                                    >
+                                        <Minus className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setFormData({ ...formData, hydration: formData.hydration + 1 })}
+                                        className="flex-1 h-8 flex items-center justify-center bg-white/40 rounded-lg hover:bg-white/60 transition-colors"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Sleep */}
+                            <div className="bg-[#e8eaf6] rounded-2xl p-4 text-[#1a237e] relative overflow-hidden">
+                                <div className="flex justify-between items-start mb-2">
+                                    <div className="bg-white/40 p-1.5 rounded-xl backdrop-blur-sm">
+                                        <Moon className="w-4 h-4" />
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-xl font-black leading-none">{formData.sleep}</p>
+                                        <p className="text-[10px] opacity-80 uppercase font-bold">Hours</p>
+                                    </div>
+                                </div>
+                                <input
+                                    type="range" min="4" max="12" step="0.5" value={formData.sleep}
+                                    onChange={(e) => setFormData({ ...formData, sleep: parseFloat(e.target.value) })}
+                                    className="w-full h-1 bg-black/10 rounded-full appearance-none cursor-pointer mt-5 accent-[#1a237e]"
+                                />
+                            </div>
+
+                            {/* Exercise */}
+                            <div className="col-span-2 bg-[#f3e5f5] rounded-2xl p-4 text-[#4a148c] relative overflow-hidden flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-white/40 p-2 rounded-xl backdrop-blur-sm">
+                                        <Activity className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold uppercase opacity-70">Activity</p>
+                                        <p className="text-2xl font-black leading-none">{formData.exercise} <span className="text-sm font-normal opacity-70">mins</span></p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setFormData({ ...formData, exercise: Math.max(0, formData.exercise - 15) })}
+                                        className="w-10 h-10 flex items-center justify-center bg-white/40 rounded-xl hover:bg-white/60 transition-colors"
+                                    >
+                                        <Minus className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        onClick={() => setFormData({ ...formData, exercise: formData.exercise + 15 })}
+                                        className="h-10 px-4 flex items-center justify-center bg-white/40 rounded-xl font-bold hover:bg-white/60 transition-colors"
+                                    >
+                                        +15 Min
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <hr className="border-gray-100" />
 
                     {/* Flow Section */}
                     <div>
@@ -179,11 +274,11 @@ export default function DailyLogModal({ isOpen, onClose, date, currentData, onSa
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-100">
+                <div className="p-6 border-t border-gray-100 bg-white">
                     <button
                         onClick={handleSave}
                         disabled={loading}
-                        className="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-black transition-all active:scale-95 disabled:opacity-50"
+                        className="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-black transition-all active:scale-95 disabled:opacity-50 shadow-xl"
                     >
                         {loading ? <span className="animate-spin">⌛</span> : <Save className="w-5 h-5" />}
                         Save Entry
