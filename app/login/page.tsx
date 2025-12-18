@@ -8,18 +8,33 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/components/auth-context"
-import { Loader2, Phone } from 'lucide-react'
+import { Loader2, Phone, Shield } from 'lucide-react'
 import { toast } from "sonner"
 
 export default function LoginPage() {
+    // Phone Auth State
     const [countryCode, setCountryCode] = useState("+91")
     const [phoneNumber, setPhoneNumber] = useState("")
     const [otp, setOtp] = useState("")
     const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null)
-    const [loading, setLoading] = useState(false)
     const [step, setStep] = useState<"PHONE" | "OTP">("PHONE")
+
+    // Admin Auth State
+    const [isAdminMode, setIsAdminMode] = useState(false)
+    const [adminEmail, setAdminEmail] = useState("")
+    const [adminPassword, setAdminPassword] = useState("")
+
+    const [loading, setLoading] = useState(false)
     const { user } = useAuth()
     const router = useRouter()
+
+    // Check for admin query param
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search)
+        if (params.get("admin") === "true") {
+            setIsAdminMode(true)
+        }
+    }, [])
 
     const countries = [
         { code: "+91", label: "India 🇮🇳" },
@@ -32,12 +47,12 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (user) {
-            router.push("/")
+            router.push(isAdminMode ? "/admin" : "/")
         }
-    }, [user, router])
+    }, [user, router, isAdminMode])
 
     useEffect(() => {
-        if (!window.recaptchaVerifier) {
+        if (!isAdminMode && !window.recaptchaVerifier) {
             window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
                 size: "invisible",
                 callback: () => {
@@ -45,7 +60,7 @@ export default function LoginPage() {
                 },
             })
         }
-    }, [])
+    }, [isAdminMode])
 
     const handleSendOtp = async () => {
         setLoading(true)
@@ -82,10 +97,29 @@ export default function LoginPage() {
         try {
             await confirmationResult.confirm(otp)
             toast.success("Successfully logged in!")
-            router.push("/")
+            // Route happens in useEffect
         } catch (error) {
             console.error(error)
             toast.error("Invalid OTP. Please try again.")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleAdminLogin = async () => {
+        if (!adminEmail || !adminPassword) {
+            toast.error("Please enter email and password")
+            return
+        }
+        setLoading(true)
+        try {
+            const { signInWithEmailAndPassword } = await import("firebase/auth")
+            await signInWithEmailAndPassword(auth, adminEmail, adminPassword)
+            toast.success("Admin access granted")
+            router.push("/admin")
+        } catch (error: any) {
+            console.error("Admin login error", error)
+            toast.error("Invalid credentials")
         } finally {
             setLoading(false)
         }
@@ -95,71 +129,100 @@ export default function LoginPage() {
         <div className="flex h-screen w-full items-center justify-center bg-gray-50">
             <Card className="w-[380px] shadow-lg">
                 <CardHeader className="text-center">
-                    <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-2">
-                        <Phone className="w-6 h-6 text-primary" />
+                    <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-2 ${isAdminMode ? 'bg-red-50' : 'bg-primary/10'}`}>
+                        {isAdminMode ? <Shield className="w-6 h-6 text-red-600" /> : <Phone className="w-6 h-6 text-primary" />}
                     </div>
-                    <CardTitle className="text-xl">Welcome Back</CardTitle>
-                    <CardDescription>Enter your phone number to sign in</CardDescription>
+                    <CardTitle className="text-xl">{isAdminMode ? "Admin Access" : "Welcome Back"}</CardTitle>
+                    <CardDescription>
+                        {isAdminMode ? "Restricted Area. Authorized Personnel Only." : "Enter your phone number to sign in"}
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div id="recaptcha-container"></div>
-                    {step === "PHONE" ? (
+                    {!isAdminMode && <div id="recaptcha-container"></div>}
+
+                    {isAdminMode ? (
+                        /* Admin Email/Password Form */
                         <div className="space-y-4">
-                            <div className="flex gap-2">
-                                <select
-                                    className="flex h-10 w-[110px] items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                    value={countryCode}
-                                    onChange={(e) => setCountryCode(e.target.value)}
-                                >
-                                    {countries.map(c => (
-                                        <option key={c.code} value={c.code}>{c.label} {c.code}</option>
-                                    ))}
-                                </select>
-                                <Input
-                                    type="tel"
-                                    placeholder="Phone Number"
-                                    value={phoneNumber}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
-                                    className="flex-1"
-                                />
-                            </div>
-                            <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleSendOtp} disabled={loading || !phoneNumber}>
+                            <Input
+                                type="email"
+                                placeholder="Admin Email"
+                                value={adminEmail}
+                                onChange={(e) => setAdminEmail(e.target.value)}
+                            />
+                            <Input
+                                type="password"
+                                placeholder="Password"
+                                value={adminPassword}
+                                onChange={(e) => setAdminPassword(e.target.value)}
+                            />
+                            <Button className="w-full bg-red-600 hover:bg-red-700" onClick={handleAdminLogin} disabled={loading}>
                                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Send OTP
+                                Authenticate
                             </Button>
-                            <p className="text-xs text-center text-muted-foreground">
-                                Standard SMS rates may apply.
-                            </p>
+                            <Button variant="ghost" className="w-full text-xs text-gray-400" onClick={() => setIsAdminMode(false)}>
+                                Back to App
+                            </Button>
                         </div>
                     ) : (
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <div className="text-center text-sm">
-                                    <span className="text-muted-foreground">Sent to </span>
-                                    <span className="font-semibold">{countryCode} {phoneNumber}</span>
+                        /* Standard Phone Auth Form */
+                        step === "PHONE" ? (
+                            <div className="space-y-4">
+                                <div className="flex gap-2">
+                                    <select
+                                        className="flex h-10 w-[110px] items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        value={countryCode}
+                                        onChange={(e) => setCountryCode(e.target.value)}
+                                    >
+                                        {countries.map(c => (
+                                            <option key={c.code} value={c.code}>{c.label} {c.code}</option>
+                                        ))}
+                                    </select>
+                                    <Input
+                                        type="tel"
+                                        placeholder="Phone Number"
+                                        value={phoneNumber}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
+                                        className="flex-1"
+                                    />
                                 </div>
-                                <Input
-                                    type="text"
-                                    placeholder="Enter 6-digit OTP"
-                                    value={otp}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
-                                    className="text-center text-lg tracking-widest"
-                                    maxLength={6}
-                                />
+                                <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleSendOtp} disabled={loading || !phoneNumber}>
+                                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Send OTP
+                                </Button>
+                                <p className="text-xs text-center text-muted-foreground">
+                                    Standard SMS rates may apply.
+                                </p>
                             </div>
-                            <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleVerifyOtp} disabled={loading || !otp}>
-                                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Verify OTP
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                className="w-full"
-                                onClick={() => setStep("PHONE")}
-                                disabled={loading}
-                            >
-                                Change Phone Number
-                            </Button>
-                        </div>
+                        ) : (
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <div className="text-center text-sm">
+                                        <span className="text-muted-foreground">Sent to </span>
+                                        <span className="font-semibold">{countryCode} {phoneNumber}</span>
+                                    </div>
+                                    <Input
+                                        type="text"
+                                        placeholder="Enter 6-digit OTP"
+                                        value={otp}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
+                                        className="text-center text-lg tracking-widest"
+                                        maxLength={6}
+                                    />
+                                </div>
+                                <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleVerifyOtp} disabled={loading || !otp}>
+                                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Verify OTP
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    className="w-full"
+                                    onClick={() => setStep("PHONE")}
+                                    disabled={loading}
+                                >
+                                    Change Phone Number
+                                </Button>
+                            </div>
+                        )
                     )}
                 </CardContent>
             </Card>
