@@ -120,7 +120,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 pb-24">
+    <div className="max-w-7xl mx-auto px-4 py-8 pb-40">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-foreground mb-2">{t('healthTools')}</h2>
         <p className="text-muted-foreground">{t('healthToolsDesc')}</p>
@@ -134,7 +134,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
       )}
 
       {/* NEW Tab Navigation (Segmented Control) */}
-      <div className="flex bg-slate-100/80 p-1.5 rounded-2xl mb-8 overflow-x-auto no-scrollbar">
+      <div className="flex bg-slate-100/80 p-1.5 rounded-2xl mb-8 overflow-x-auto no-scrollbar snap-x">
         {[
           { id: "wellness", label: "💪 Wellness", color: "text-blue-600" },
           { id: "exercise", label: "🏃 Exercise", color: "text-green-600" },
@@ -145,7 +145,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 min-w-[120px] px-4 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap ${activeTab === tab.id
+            className={`flex-none snap-start min-w-[110px] sm:flex-1 px-4 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap mr-2 last:mr-0 ${activeTab === tab.id
               ? "bg-white text-slate-900 shadow-sm ring-1 ring-black/5"
               : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               }`}

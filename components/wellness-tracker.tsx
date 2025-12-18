@@ -168,16 +168,22 @@ export default function WellnessTracker({ date }: WellnessTrackerProps) {
 
       </div>
 
-      <button
-        onClick={() => handleSave()}
-        disabled={loading}
-        className={`w-full py-3 rounded-xl font-bold text-sm transition-all shadow-lg flex items-center justify-center gap-2 ${isSaved
-          ? "bg-green-500 text-white shadow-green-500/30"
-          : "bg-gray-900 text-white hover:bg-gray-800"
-          }`}
-      >
-        {isSaved ? <><Check className="w-4 h-4" /> Saved</> : "Save Wellness Data"}
-      </button>
     </div>
+      
+      {/* Auto-Save & Status Indicator */ }
+  <div className="flex justify-center items-center py-2 h-8">
+    {loading ? (
+      <span className="text-xs font-medium text-gray-400 animate-pulse flex items-center gap-1">
+        Saving...
+      </span>
+    ) : isSaved ? (
+      <span className="text-xs font-medium text-green-500 flex items-center gap-1 animate-in fade-in slide-in-from-bottom-1">
+        <Check className="w-3 h-3" /> Saved
+      </span>
+    ) : (
+      <span className="text-[10px] text-gray-300">Changes save automatically</span>
+    )}
+  </div>
+    </div >
   )
 }

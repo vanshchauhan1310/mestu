@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import ProfileStats from "./profile-stats"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { TrendingUp, Pencil, Save, X, Trash2, Download, Cloud } from 'lucide-react'
+import { TrendingUp, Pencil, Save, X, Trash2, Download, Cloud, Zap } from 'lucide-react'
 import { doc, updateDoc, collection, getDocs, deleteDoc, writeBatch } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { useLanguage } from "./language-context"
