@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { format, addDays, differenceInDays, isAfter, isSameDay } from "date-fns"
 import CycleCalendarStrip from "./cycle-calendar-strip"
 import MonthCalendarModal from "./month-calendar-modal"
@@ -116,6 +116,22 @@ export default function HomeHeroSection({ user }: HomeHeroSectionProps) {
                 <CycleCalendarStrip
                     selectedDate={selectedDate}
                     onSelectDate={setSelectedDate}
+                    periodDays={useMemo(() => {
+                        if (!user?.lastPeriodDate) return []
+                        const days = []
+                        const lastPeriod = new Date(user.lastPeriodDate)
+                        const cycleLen = parseInt(user.cycleLength || "28")
+                        const duration = parseInt(user.periodDuration || "5")
+
+                        // Predict next 3 periods and past 1
+                        for (let i = -1; i < 4; i++) {
+                            const start = addDays(lastPeriod, i * cycleLen)
+                            for (let d = 0; d < duration; d++) {
+                                days.push(addDays(start, d))
+                            }
+                        }
+                        return days
+                    }, [user])}
                 />
 
             </div>

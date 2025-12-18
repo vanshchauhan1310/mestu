@@ -41,97 +41,94 @@ export default function ThreadDetail({ thread, onClose, onAddReply }: ThreadDeta
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-border p-6 flex justify-between items-start">
-          <div className="flex-1">
-            <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full capitalize">
-              {thread.category}
-            </span>
-            <h2 className="text-2xl font-bold text-foreground mt-3">{thread.title}</h2>
-          </div>
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-end sm:items-center p-0 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-lg h-[90vh] sm:h-[85vh] sm:rounded-3xl rounded-t-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-300">
+
+        {/* Header - Simple Drag Handle / Title */}
+        <div className="flex-none p-4 border-b border-gray-100 flex items-center justify-between bg-white z-10">
+          <div className="w-10"></div> {/* Spacer */}
+          <h3 className="font-bold text-gray-900">Comments</h3>
           <button
             onClick={onClose}
-            className="px-3 py-2 bg-muted text-muted-foreground hover:bg-border rounded-lg transition-smooth"
+            className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-full transition-colors text-gray-500"
           >
             ✕
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
-          {/* Original Post */}
-          <div className="border-b border-border pb-6">
-            <div className="flex gap-4">
-              <div className="text-3xl">{thread.avatar || "👤"}</div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-semibold text-foreground">{thread.author}</p>
-                  <p className="text-xs text-muted-foreground">{thread.timestamp}</p>
-                </div>
-                <p className="text-foreground leading-relaxed">{thread.content}</p>
-                <div className="flex gap-4 mt-4 text-sm">
-                  <button className="text-muted-foreground hover:text-primary transition-smooth">
-                    👍 {thread.likes || 0}
-                  </button>
-                  <button className="text-muted-foreground hover:text-primary transition-smooth">
-                    💬 {replies.length}
-                  </button>
-                </div>
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {/* Original Post Context */}
+          <div className="flex gap-3 pb-6 border-b border-gray-100">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-sm font-bold text-indigo-700 shrink-0">
+              {thread.author?.charAt(0) || "A"}
+            </div>
+            <div className="space-y-1">
+              <p className="font-bold text-sm text-gray-900">{thread.author} <span className="font-normal text-gray-500">• {thread.timestamp ? "Just now" : "Recently"}</span></p>
+              <p className="text-gray-800 text-sm leading-relaxed">{thread.content}</p>
+            </div>
+          </div>
+
+          {/* Replies List */}
+          <div className="space-y-5">
+            {replies.length === 0 ? (
+              <div className="text-center py-10 text-gray-400 text-sm">
+                No comments yet. Be the first to say something!
               </div>
-            </div>
-          </div>
-
-          {/* Replies */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">{replies.length} Replies</h3>
-            <div className="space-y-4">
-              {replies.map((reply) => (
-                <div key={reply.id} className="border-l-2 border-primary/20 pl-4">
-                  <div className="flex gap-3">
-                    <div className="text-2xl">{reply.avatar}</div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="font-semibold text-foreground text-sm">{reply.author}</p>
-                        <p className="text-xs text-muted-foreground">{reply.timestamp}</p>
-                      </div>
-                      <p className="text-sm text-foreground leading-relaxed">{reply.content}</p>
-                      <button
-                        onClick={() => toggleLike(reply.id)}
-                        className={`text-xs mt-2 transition-smooth ${
-                          reply.liked ? "text-primary font-semibold" : "text-muted-foreground hover:text-primary"
-                        }`}
-                      >
-                        👍 {reply.likes}
-                      </button>
-                    </div>
+            ) : (
+              replies.map((reply) => (
+                <div key={reply.id} className="flex gap-3 group">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-500 shrink-0">
+                    {reply.author?.charAt(0) || "?"}
                   </div>
+                  <div className="flex-1 space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-gray-900">{reply.author}</span>
+                      <span className="text-xs text-gray-400">{reply.timestamp}</span>
+                    </div>
+                    <p className="text-sm text-gray-700">{reply.content}</p>
+                    <button className="text-xs font-semibold text-gray-400 mt-1 hover:text-gray-600">Reply</button>
+                  </div>
+                  <button
+                    onClick={() => toggleLike(reply.id)}
+                    className="self-start text-gray-400 hover:text-pink-500 transition-colors -mt-1 p-2"
+                  >
+                    <span className="block text-center text-[10px] w-full">{reply.likes > 0 ? reply.likes : ""}</span>
+                    {reply.liked ? "❤️" : "♡"}
+                  </button>
                 </div>
-              ))}
-            </div>
+              ))
+            )}
           </div>
+        </div>
 
-          {/* Reply Form */}
-          <div className="border-t border-border pt-6">
-            <h3 className="font-semibold text-foreground mb-4">Add Your Reply</h3>
-            <form onSubmit={handleReplySubmit} className="space-y-3">
-              <textarea
-                value={replyContent}
-                onChange={(e) => setReplyContent(e.target.value)}
-                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                rows={3}
-                placeholder="Share your thoughts..."
-              />
-              <button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2 rounded-lg transition-smooth"
-              >
-                Post Reply
-              </button>
-            </form>
-          </div>
+        {/* Sticky Bottom Input Bar */}
+        <div className="flex-none p-4 border-t border-gray-100 bg-white">
+          <form onSubmit={handleReplySubmit} className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+              Me
+            </div>
+            <input
+              type="text"
+              value={replyContent}
+              onChange={(e) => setReplyContent(e.target.value)}
+              placeholder={`Add a comment for ${thread.author}...`}
+              className="flex-1 bg-gray-100 text-sm px-4 py-3 rounded-full outline-none focus:ring-2 focus:ring-purple-100 transition-all placeholder-gray-500"
+              autoFocus
+            />
+            <button
+              type="submit"
+              disabled={!replyContent.trim()}
+              className="text-purple-600 font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:text-purple-700 px-2"
+            >
+              Post
+            </button>
+          </form>
         </div>
       </div>
     </div>
+  )
+}
   )
 }

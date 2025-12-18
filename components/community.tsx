@@ -3,9 +3,9 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import ThreadDetail from "./thread-detail"
-import { collection, addDoc, query, orderBy, onSnapshot } from "firebase/firestore"
+import { collection, addDoc, query, orderBy, onSnapshot, updateDoc, doc } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
-import { ThumbsUp, MessageCircle, Plus, Search, Sparkles, Filter, Hash, MoreHorizontal, Clock, Heart } from "lucide-react"
+import { ThumbsUp, MessageCircle, Plus, Search, Sparkles, Filter, Hash, MoreHorizontal, Clock, Heart, Share2 } from "lucide-react"
 
 interface CommunityProps {
   user: any
@@ -179,8 +179,8 @@ export default function Community({ user }: CommunityProps) {
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
               className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all shadow-sm border ${selectedCategory === category.id
-                  ? "bg-gray-900 text-white border-gray-900 shadow-gray-900/20"
-                  : "bg-white text-gray-500 border-gray-100 hover:bg-gray-50"
+                ? "bg-gray-900 text-white border-gray-900 shadow-gray-900/20"
+                : "bg-white text-gray-500 border-gray-100 hover:bg-gray-50"
                 }`}
             >
               {category.label}
@@ -223,8 +223,8 @@ export default function Community({ user }: CommunityProps) {
                       </div>
                     </div>
                     <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-md tracking-wider ${thread.category === 'pcos' ? 'bg-purple-100 text-purple-700' :
-                        thread.category === 'endo' ? 'bg-pink-100 text-pink-700' :
-                          'bg-gray-100 text-gray-600'
+                      thread.category === 'endo' ? 'bg-pink-100 text-pink-700' :
+                        'bg-gray-100 text-gray-600'
                       }`}>
                       {thread.category}
                     </span>
@@ -238,13 +238,31 @@ export default function Community({ user }: CommunityProps) {
                   </p>
 
                   <div className="flex items-center gap-4 border-t border-gray-50 pt-3">
-                    <button className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-pink-500 transition-colors">
-                      <Heart className={`w-4 h-4 ${thread.likes > 0 ? "fill-pink-50 text-pink-500" : ""}`} />
-                      {thread.likes || 0} Likes
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const newLikes = (thread.likes || 0) + 1
+                        // Optimistic Update
+                        const updated = threads.map(t => t.id === thread.id ? { ...t, likes: newLikes } : t)
+                        setThreads(updated)
+                        // Fire & Forget (or handle error silently)
+                        updateDoc(doc(db, "posts", thread.id), { likes: newLikes }).catch(console.error)
+                      }}
+                      className="group/like flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-pink-500 transition-colors"
+                    >
+                      <div className={`p-1.5 rounded-full group-hover/like:bg-pink-50 transition-colors`}>
+                        <Heart className={`w-5 h-5 ${thread.likes > 0 ? "fill-pink-500 text-pink-500" : "text-gray-400"}`} />
+                      </div>
+                      <span className={thread.likes > 0 ? "text-pink-600" : ""}>{thread.likes || 0}</span>
                     </button>
+
                     <button className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-blue-500 transition-colors">
-                      <MessageCircle className="w-4 h-4" />
-                      {thread.replies?.length || 0} Replies
+                      <MessageCircle className="w-5 h-5" />
+                      {thread.replies?.length || 0}
+                    </button>
+
+                    <button className="ml-auto text-gray-400 hover:text-gray-600">
+                      <Share2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

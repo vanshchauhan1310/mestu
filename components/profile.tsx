@@ -16,6 +16,16 @@ interface ProfileProps {
 
 export default function Profile({ user, setUser }: ProfileProps) {
   const { language, setLanguage, t } = useLanguage()
+
+  // Guard Clause: Prevent crash if user data is missing
+  if (!user) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
   const [activeTab, setActiveTab] = useState("profile")
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -314,8 +324,8 @@ export default function Profile({ user, setUser }: ProfileProps) {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 px-4 py-3 rounded-xl font-bold text-sm md:text-base transition-all whitespace-nowrap ${activeTab === tab.id
-                ? "bg-white text-slate-800 shadow-sm ring-1 ring-black/5"
-                : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+              ? "bg-white text-slate-800 shadow-sm ring-1 ring-black/5"
+              : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
               }`}
           >
             {tab.label}

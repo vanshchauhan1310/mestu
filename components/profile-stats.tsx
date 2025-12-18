@@ -6,10 +6,14 @@ interface ProfileStatsProps {
   wellness: any[]
 }
 
-export default function ProfileStats({ cycles, symptoms, wellness }: ProfileStatsProps) {
-  const totalCyclesTracked = cycles.length
-  const totalSymptomEntries = symptoms.length
-  const totalWellnessEntries = wellness.length
+export default function ProfileStats({
+  cycles = [],
+  symptoms = [],
+  wellness = []
+}: ProfileStatsProps) {
+  const totalCyclesTracked = cycles?.length || 0
+  const totalSymptomEntries = symptoms?.length || 0
+  const totalWellnessEntries = wellness?.length || 0
 
   const getStreak = () => {
     if (symptoms.length === 0) return 0
