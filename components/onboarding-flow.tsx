@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { doc, setDoc } from "firebase/firestore"
+import { doc, setDoc, collection, addDoc } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { ArrowRight, ArrowLeft, Check, ClipboardList, Target, AlertCircle, Heart, Activity, Calendar, Droplets, Smile, Frown, Users, Info, ChevronRight, Zap, HeartPulse, CheckCircle, BatteryLow, Theater, Expand, Brain, CloudFog, Sparkles, ShieldCheck } from "lucide-react"
 
@@ -214,6 +214,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             email: user.email,
             phoneNumber: user.phoneNumber,
           })
+
+          // Save Cycles to Subcollection
+          const cyclesRef = collection(db, "users", user.uid, "cycles")
+          const validHistory = userData.periodHistory.filter(h => h.startDate && h.endDate)
+
+          for (const cycle of validHistory) {
+            await addDoc(cyclesRef, {
+              startDate: cycle.startDate,
+              endDate: cycle.endDate,
+              type: 'period'
+            })
+          }
+
           localStorage.setItem("saukhya_user", JSON.stringify(userData))
           localStorage.setItem("saukhya_onboarding_complete", "true")
           onComplete(userData)

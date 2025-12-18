@@ -4,8 +4,10 @@ import { useState, useEffect } from "react"
 import WellnessTracker from "./wellness-tracker"
 import CycleRecommendations from "./cycle-recommendations"
 import AISymptomChecker from "./ai-symptom-checker"
+import TrendsWidget from "./trends-widget"
 
 import { useLanguage } from "./language-context"
+
 
 interface HealthToolsProps {
   user: any
@@ -137,6 +139,7 @@ export default function HealthTools({ user }: HealthToolsProps) {
       <div className="flex bg-slate-100/80 p-1.5 rounded-2xl mb-8 overflow-x-auto no-scrollbar snap-x">
         {[
           { id: "wellness", label: "💪 Wellness", color: "text-blue-600" },
+          { id: "trends", label: "📈 Trends", color: "text-pink-600" },
           { id: "exercise", label: "🏃 Exercise", color: "text-green-600" },
           { id: "nutrition", label: "🥗 Nutrition", color: "text-orange-600" },
           { id: "stress", label: "🧘 Stress Relief", color: "text-purple-600" },
@@ -170,6 +173,9 @@ export default function HealthTools({ user }: HealthToolsProps) {
           <WellnessTracker date={selectedDate} />
         </div>
       )}
+
+      {/* Trends Tab */}
+      {activeTab === "trends" && <TrendsWidget />}
 
       {/* Exercise Tab */}
       {activeTab === "exercise" && (
@@ -324,3 +330,4 @@ export default function HealthTools({ user }: HealthToolsProps) {
     </div>
   )
 }
+
