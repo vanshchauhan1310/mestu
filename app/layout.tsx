@@ -1,26 +1,33 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import { ClientLayout } from "@/components/client-layout"
+import { AuthProvider } from "@/components/auth-context"
 import "./globals.css"
 
 const geistSans = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Saukhya - Menstrual Health Support",
-  description: "Comprehensive menstrual health tracking and support platform",
+  title: "HEAL - PCOS & Menstrual Support",
+  description: "Holistic health screening and support platform",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Saukhya",
+    title: "HEAL",
   },
   formatDetection: {
     telephone: false,
   },
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
   generator: 'v0.app'
+}
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 }
 
 export default function RootLayout({
@@ -35,7 +42,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="true" />
         <meta name="apple-mobile-web-app-capable" content="true" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Saukhya" />
+        <meta name="apple-mobile-web-app-title" content="HEAL" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
         <link rel="icon" type="image/png" href="/favicon.jpg" />
         <link rel="manifest" href="/manifest.json" />
@@ -52,7 +59,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.className} bg-background text-foreground`}>
-        <ClientLayout>{children}</ClientLayout>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   )

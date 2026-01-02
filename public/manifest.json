@@ -1,7 +1,7 @@
 {
-  "name": "Saukhya - Menstrual Health Support",
-  "short_name": "Saukhya",
-  "description": "Comprehensive menstrual health tracking and support platform",
+  "name": "HEAL - Holistic Health",
+  "short_name": "HEAL",
+  "description": "PCOS Screening and Menstrual Health Support",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -22,7 +22,10 @@
       "purpose": "any"
     }
   ],
-  "categories": ["health", "medical"],
+  "categories": [
+    "health",
+    "medical"
+  ],
   "screenshots": [
     {
       "src": "/screenshot-1.jpg",

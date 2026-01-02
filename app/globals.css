@@ -146,9 +146,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     /* Added safe area support for notched devices */
     position: fixed;
@@ -156,6 +158,7 @@
     height: 100%;
     overflow: hidden;
   }
+
   body {
     position: fixed;
     width: 100%;
@@ -171,9 +174,11 @@
 .text-primary {
   @apply text-[#368241];
 }
+
 .bg-primary {
   @apply bg-[#368241];
 }
+
 .border-primary {
   @apply border-[#368241];
 }
@@ -181,6 +186,7 @@
 .text-primary-light {
   @apply text-[#55a363];
 }
+
 .bg-primary-light {
   @apply bg-[#55a363];
 }
@@ -188,6 +194,7 @@
 .text-accent-warm {
   @apply text-[#c15824];
 }
+
 .bg-accent-warm {
   @apply bg-[#c15824];
 }
@@ -195,6 +202,7 @@
 .text-accent-red {
   @apply text-[#b4141c];
 }
+
 .bg-accent-red {
   @apply bg-[#b4141c];
 }
@@ -202,6 +210,7 @@
 .text-accent-purple {
   @apply text-[#722062];
 }
+
 .bg-accent-purple {
   @apply bg-[#722062];
 }
@@ -209,6 +218,7 @@
 .text-neutral-dark {
   @apply text-[#4c555a];
 }
+
 .bg-neutral-dark {
   @apply bg-[#4c555a];
 }
@@ -233,6 +243,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

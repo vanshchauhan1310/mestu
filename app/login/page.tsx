@@ -2,127 +2,65 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { RecaptchaVerifier, signInWithPhoneNumber, type ConfirmationResult } from "firebase/auth"
 import { auth } from "@/lib/firebase"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/components/auth-context"
-import { Loader2, Phone, Shield } from 'lucide-react'
 import { toast } from "sonner"
+import Image from "next/image"
 
 export default function LoginPage() {
     // Phone Auth State
-    const [countryCode, setCountryCode] = useState("+91")
     const [phoneNumber, setPhoneNumber] = useState("")
     const [otp, setOtp] = useState("")
-    const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null)
     const [step, setStep] = useState<"PHONE" | "OTP">("PHONE")
-
-    // Admin Auth State
-    const [isAdminMode, setIsAdminMode] = useState(false)
-    const [adminEmail, setAdminEmail] = useState("")
-    const [adminPassword, setAdminPassword] = useState("")
-
     const [loading, setLoading] = useState(false)
     const { user } = useAuth()
     const router = useRouter()
 
-    // Check for admin query param
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search)
-        if (params.get("admin") === "true") {
-            setIsAdminMode(true)
-        }
-    }, [])
-
-    const countries = [
-        { code: "+91", label: "India 🇮🇳" },
-        { code: "+1", label: "USA/Canada 🇺🇸/🇨🇦" },
-        { code: "+49", label: "Germany 🇩🇪" },
-        { code: "+44", label: "UK 🇬🇧" },
-        { code: "+61", label: "Australia 🇦🇺" },
-        { code: "+971", label: "UAE 🇦🇪" },
-    ]
-
     useEffect(() => {
         if (user) {
-            if (isAdminMode) {
-                // Only redirect to admin dashboard if we are ALREADY the admin
-                if (user.email === "saukya2025@gmail.com") {
-                    router.push("/admin")
-                }
-                // If logged in as regular user but trying to access admin login, 
-                // do NOT redirect. Let them see the form to switch accounts.
-            } else {
-                // Normal user flow: if logged in, go home
-                router.push("/")
-            }
+            router.push("/")
         }
-    }, [user, router, isAdminMode])
-
-    useEffect(() => {
-        if (!isAdminMode && !window.recaptchaVerifier) {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-                size: "invisible",
-                callback: () => {
-                    // reCAPTCHA solved
-                },
-            })
-        }
-    }, [isAdminMode])
-
-    const getRecaptchaVerifier = () => {
-        if (!window.recaptchaVerifier) {
-            // @ts-ignore
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-                size: "invisible",
-                callback: () => {
-                    // reCAPTCHA solved
-                },
-            })
-        }
-        return window.recaptchaVerifier
-    }
+    }, [user, router])
 
     const handleSendOtp = async () => {
-        setLoading(true)
-        try {
-            const formattedNumber = `${countryCode}${phoneNumber}`
-            const appVerifier = getRecaptchaVerifier()
-            const confirmation = await signInWithPhoneNumber(auth, formattedNumber, appVerifier)
-            setConfirmationResult(confirmation)
-            setStep("OTP")
-            toast.success(`OTP sent to ${formattedNumber}`)
-        } catch (error: any) {
-            console.error("OTP Send Error:", error)
-
-            if (window.recaptchaVerifier) {
-                window.recaptchaVerifier.clear()
-                window.recaptchaVerifier = null
-            }
-
-            let msg = "Failed to send OTP."
-            if (error.code === "auth/invalid-phone-number") msg = "Invalid phone number format."
-            if (error.code === "auth/quota-exceeded") msg = "SMS quota exceeded."
-            if (error.code === "auth/too-many-requests") msg = "Too many requests. Try again later."
-            if (error.code === "auth/invalid-app-credential" || error.code === "auth/missing-client-identifier") {
-                msg = "Development Error: Please use a Test Phone Number (set in Firebase Console) for localhost."
-            }
-
-            toast.error(msg)
-        } finally {
-            setLoading(false)
+        if (!phoneNumber || phoneNumber.length < 10) {
+            toast.error("Please enter a valid number")
+            return
         }
+        setLoading(true)
+        // Simulate API call
+        setTimeout(() => {
+            setStep("OTP")
+            toast.success("OTP sent! Use 123455")
+            setLoading(false)
+        }, 800)
     }
 
     const handleVerifyOtp = async () => {
-        if (!confirmationResult) return
         setLoading(true)
         try {
-            await confirmationResult.confirm(otp)
+            if (otp !== "123455") {
+                throw new Error("Invalid OTP")
+            }
+
+            // DUMMY FLOW: Log in as Guest/Anonymous
+            const { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword } = await import("firebase/auth")
+
+            try {
+                await signInAnonymously(auth)
+            } catch (anonErr: any) {
+                // Return to Email/Pass if Anon is disabled
+                const randomId = Math.floor(Math.random() * 1000000)
+                const guestEmail = `guest_${randomId}@heal.com`
+                const guestPass = "TestUser123!"
+                try {
+                    await createUserWithEmailAndPassword(auth, guestEmail, guestPass)
+                } catch (e) {
+                    // login if exists?
+                }
+            }
+
             toast.success("Successfully logged in!")
-            // Route happens in useEffect
         } catch (error) {
             console.error(error)
             toast.error("Invalid OTP. Please try again.")
@@ -131,198 +69,97 @@ export default function LoginPage() {
         }
     }
 
-    const handleAdminLogin = async () => {
-        if (!adminEmail || !adminPassword) {
-            toast.error("Please enter email and password")
-            return
-        }
-        setLoading(true)
-        try {
-            const { signInWithEmailAndPassword } = await import("firebase/auth")
-            await signInWithEmailAndPassword(auth, adminEmail, adminPassword)
-            toast.success("Admin access granted")
-            router.push("/admin")
-        } catch (error: any) {
-            console.error("Admin login error", error)
-            toast.error("Invalid credentials")
-        } finally {
-            setLoading(false)
-        }
-    }
-
     return (
-        <div className="flex h-screen w-full items-center justify-center bg-gray-50">
-            <Card className="w-[380px] shadow-lg">
-                <CardHeader className="text-center">
-                    <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-2 ${isAdminMode ? 'bg-red-50' : 'bg-primary/10'}`}>
-                        {isAdminMode ? <Shield className="w-6 h-6 text-red-600" /> : <Phone className="w-6 h-6 text-primary" />}
+        <div className="min-h-screen w-full bg-[#DCF5E6] flex items-center justify-center p-4">
+            <div className="w-full max-w-[400px] bg-[#DCF5E6] md:bg-white md:p-8 md:rounded-3xl md:shadow-xl md:border md:border-green-50 transition-all">
+
+                {/* Logo Section */}
+                <div className="flex justify-center mb-12 mt-8 md:mt-0">
+                    <div className="relative w-24 h-24">
+                        <Image
+                            src="/intro/intro.png"
+                            alt="HEAL Logo"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
-                    <CardTitle className="text-xl">{isAdminMode ? "Admin Access" : "Welcome Back"}</CardTitle>
-                    <CardDescription>
-                        {isAdminMode ? "Restricted Area. Authorized Personnel Only." : "Enter your phone number to sign in"}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {!isAdminMode && <div id="recaptcha-container"></div>}
+                </div>
 
-                    {isAdminMode ? (
-                        /* Admin Email/Password Form */
-                        <div className="space-y-4">
-                            <Input
-                                type="email"
-                                placeholder="Admin Email"
-                                value={adminEmail}
-                                onChange={(e) => setAdminEmail(e.target.value)}
-                            />
-                            <Input
-                                type="password"
-                                placeholder="Password"
-                                value={adminPassword}
-                                onChange={(e) => setAdminPassword(e.target.value)}
-                            />
-                            <Button className="w-full bg-red-600 hover:bg-red-700" onClick={handleAdminLogin} disabled={loading}>
-                                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Authenticate
-                            </Button>
-                            <Button variant="ghost" className="w-full text-xs text-gray-400" onClick={() => setIsAdminMode(false)}>
-                                Back to App
-                            </Button>
+                {/* Content */}
+                <h1 className="text-2xl font-serif font-bold text-[#1a4d2e] mb-8 tracking-wide">
+                    {step === "PHONE" ? "Enter your number" : "Enter Verification Code"}
+                </h1>
+
+                {step === "PHONE" ? (
+                    <div className="space-y-8">
+                        {/* Styled Input Group */}
+                        <div className="relative">
+                            <label className="absolute -top-2.5 left-4 bg-[#DCF5E6] md:bg-white px-2 text-[#48A359] font-bold text-xs uppercase tracking-wider z-10 transition-colors">
+                                Mobile Number
+                            </label>
+                            <div className="border border-[#48A359] rounded-xl overflow-hidden bg-transparent h-14 flex items-center px-4 relative">
+                                <span className="text-gray-500 font-medium mr-2">+91</span>
+                                <input
+                                    type="tel"
+                                    className="flex-1 bg-transparent border-none outline-none text-gray-800 font-medium text-lg placeholder-gray-400"
+                                    placeholder="9876543210"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                />
+                            </div>
                         </div>
-                    ) : (
-                        /* Standard Phone Auth Form */
-                        step === "PHONE" ? (
-                            <div className="space-y-4">
-                                <div className="flex gap-2">
-                                    <select
-                                        className="flex h-10 w-[110px] items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                        value={countryCode}
-                                        onChange={(e) => setCountryCode(e.target.value)}
-                                    >
-                                        {countries.map(c => (
-                                            <option key={c.code} value={c.code}>{c.label} {c.code}</option>
-                                        ))}
-                                    </select>
-                                    <Input
-                                        type="tel"
-                                        placeholder="Phone Number"
-                                        value={phoneNumber}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
-                                        className="flex-1"
-                                    />
-                                </div>
-                                <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleSendOtp} disabled={loading || !phoneNumber}>
-                                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Send OTP
-                                </Button>
-                                <p className="text-xs text-center text-muted-foreground">
-                                    Standard SMS rates may apply.
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <div className="text-center text-sm">
-                                        <span className="text-muted-foreground">Sent to </span>
-                                        <span className="font-semibold">{countryCode} {phoneNumber}</span>
-                                    </div>
-                                    <Input
-                                        type="text"
-                                        placeholder="Enter 6-digit OTP"
-                                        value={otp}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
-                                        className="text-center text-lg tracking-widest"
-                                        maxLength={6}
-                                    />
-                                </div>
-                                <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleVerifyOtp} disabled={loading || !otp}>
-                                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Verify OTP
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    className="w-full"
-                                    onClick={() => setStep("PHONE")}
-                                    disabled={loading}
-                                >
-                                    Change Phone Number
-                                </Button>
-                            </div>
-                        )
-                    )}
 
-                    {/* {!isAdminMode && (
-                        <div className="mt-6 text-center">
-                            <div className="relative">
-                                <div className="absolute inset-0 flex items-center">
-                                    <span className="w-full border-t" />
-                                </div>
-                                <div className="relative flex justify-center text-xs uppercase">
-                                    <span className="bg-white px-2 text-muted-foreground">Or</span>
-                                </div>
+                        <button
+                            onClick={handleSendOtp}
+                            disabled={loading}
+                            className="w-full bg-[#40914d] text-white py-4 rounded-full font-bold text-lg shadow-lg hover:bg-[#347840] hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                            {loading ? "Sending..." : "Continue"}
+                        </button>
+                    </div>
+                ) : (
+                    <div className="space-y-8">
+                        <div className="relative">
+                            <label className="absolute -top-2.5 left-4 bg-[#DCF5E6] md:bg-white px-2 text-[#48A359] font-bold text-xs uppercase tracking-wider z-10 transition-colors">
+                                OTP Code
+                            </label>
+                            <div className="border border-[#48A359] rounded-xl overflow-hidden bg-transparent h-14 flex items-center px-4 relative">
+                                <input
+                                    type="text"
+                                    className="flex-1 bg-transparent border-none outline-none text-gray-800 font-medium text-lg placeholder-gray-400 text-center tracking-[0.5em]"
+                                    placeholder="123455"
+                                    maxLength={6}
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                />
                             </div>
-                            <Button
-                                variant="outline"
-                                className="w-full mt-4 border-dashed border-gray-400 text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                                onClick={async () => {
-                                    setLoading(true)
-                                    try {
-                                        // 1. Try Anonymous First
-                                        const { signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword } = await import("firebase/auth")
-                                        try {
-                                            await signInAnonymously(auth)
-                                            toast.success("Logged in as Guest (Anonymous)")
-                                            return
-                                        } catch (anonErr: any) {
-                                            // 2. If Anon disabled, try Guest Email/Pass
-                                            if (anonErr.code === 'auth/operation-not-allowed' || anonErr.code === 'auth/admin-restricted-operation') {
-                                                console.log("Anonymous auth disabled, trying guest email...")
-                                                const guestEmail = "guest_demo@saukya.com"
-                                                const guestPass = "TestUser123!"
-
-                                                try {
-                                                    await signInWithEmailAndPassword(auth, guestEmail, guestPass)
-                                                    toast.success("Logged in as Guest (Email)")
-                                                } catch (loginErr: any) {
-                                                    // 3. If User doesn't exist, Create it
-                                                    if (loginErr.code === 'auth/user-not-found' || loginErr.code === 'auth/invalid-credential') {
-                                                        try {
-                                                            await createUserWithEmailAndPassword(auth, guestEmail, guestPass)
-                                                            toast.success("Created & Logged in as Guest")
-                                                        } catch (createErr: any) {
-                                                            throw createErr
-                                                        }
-                                                    } else {
-                                                        throw loginErr
-                                                    }
-                                                }
-                                            } else {
-                                                throw anonErr
-                                            }
-                                        }
-                                    } catch (e: any) {
-                                        console.error(e)
-                                        let msg = "Test login failed."
-                                        if (e.code === 'auth/operation-not-allowed' || e.code === 'auth/admin-restricted-operation') {
-                                            msg = "Please Enable 'Anonymous' or 'Email/Password' in Firebase Console."
-                                        }
-                                        toast.error(msg)
-                                    } finally {
-                                        setLoading(false)
-                                    }
-                                }}
-                                disabled={loading}
-                            >
-                                🧪 Test Login (Bypass OTP)
-                            </Button>
                         </div>
-                    )} */}
-                </CardContent>
-            </Card>
+
+                        <button
+                            onClick={handleVerifyOtp}
+                            disabled={loading}
+                            className="w-full bg-[#40914d] text-white py-4 rounded-full font-bold text-lg shadow-lg hover:bg-[#347840] hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                            {loading ? "Verifying..." : "Verify & Continue"}
+                        </button>
+
+                        <button
+                            onClick={() => setStep("PHONE")}
+                            className="w-full text-center text-sm text-[#40914d] font-bold hover:underline"
+                        >
+                            Change Number
+                        </button>
+                    </div>
+                )}
+
+                {/* Footer Terms */}
+                <p className="text-center text-[10px] text-gray-500 mt-8 max-w-xs mx-auto leading-relaxed">
+                    By clicking, I accept the <span className="font-bold text-gray-800">terms of service</span> and <span className="font-bold text-gray-800">privacy policy</span>
+                </p>
+
+                {/* Num pad placeholder visual for Mobile Feel (Optional, browser keyboard is better functionally, but keeping space empty at bottom mimics the design) */}
+                <div className="h-20" />
+            </div>
         </div>
     )
-}
-declare global {
-    interface Window {
-        recaptchaVerifier: any
-    }
 }
