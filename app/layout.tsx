@@ -58,8 +58,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${geistSans.className} bg-background text-foreground`}>
-        <AuthProvider>{children}</AuthProvider>
+      <body className={`${geistSans.className} bg-[#f0f2f5] text-foreground min-h-screen flex justify-center`}>
+        <div className="w-full max-w-[450px] bg-white min-h-screen shadow-2xl relative flex flex-col overflow-hidden">
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   )

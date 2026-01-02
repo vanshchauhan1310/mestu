@@ -162,7 +162,7 @@ const SECTIONS: Section[] = [
     }
 ]
 
-export default function PCOSScreener() {
+export default function PCOSScreener({ onComplete }: { onComplete?: (results: any) => void }) {
     const { user } = useAuth()
 
     // Flatten questions
@@ -221,7 +221,11 @@ export default function PCOSScreener() {
             }
         }
         setSaving(false)
-        setViewState('results')
+        if (onComplete) {
+            onComplete(results)
+        } else {
+            setViewState('results')
+        }
         setAnimating(false)
     }
 
@@ -287,9 +291,9 @@ export default function PCOSScreener() {
         const percent = ((currentQIndex + 1) / allQuestions.length) * 100
 
         return (
-            <div className="max-w-lg mx-auto min-h-screen bg-white md:bg-gray-50 flex flex-col">
+            <div className="flex-1 bg-white flex flex-col">
                 {/* Header / Progress */}
-                <div className="pt-6 pb-6 px-6 bg-white sticky top-0 z-10">
+                <div className="pt-8 pb-4 px-6 bg-white sticky top-0 z-10">
                     <div className="relative flex items-center justify-center mb-6">
                         <button
                             onClick={() => currentQIndex > 0 ? setCurrentQIndex(i => i - 1) : setViewState('intro')}
@@ -297,25 +301,27 @@ export default function PCOSScreener() {
                         >
                             <ArrowLeft className="w-6 h-6" />
                         </button>
-                        <span className="text-[#368241] font-bold text-lg tracking-widest">
-                            {currentQIndex + 1}<span className="text-gray-300 text-sm font-normal">/</span>{allQuestions.length}
-                        </span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-[#48A359] font-bold text-lg">{currentQIndex + 1}</span>
+                            <span className="text-gray-300 text-sm">/</span>
+                            <span className="text-[#48A359] font-bold text-lg">{allQuestions.length}</span>
+                        </div>
                     </div>
 
                     {/* Thick Progress Bar */}
-                    <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-[#368241] rounded-full transition-all duration-500 ease-out"
+                            className="h-full bg-[#48A359] rounded-full transition-all duration-500 ease-out"
                             style={{ width: `${percent}%` }}
                         />
                     </div>
                 </div>
 
                 {/* Question Card */}
-                <div className="flex-1 px-6 py-4 flex flex-col max-w-md mx-auto w-full">
+                <div className="flex-1 px-6 py-8 flex flex-col w-full">
                     <div className={`transition-all duration-300 ${animating ? 'opacity-0 translate-x-4' : 'opacity-100'}`}>
 
-                        <h2 className="text-xl md:text-2xl font-medium text-gray-900 text-left mb-10 leading-snug">
+                        <h2 className="text-2xl font-bold text-[#1a4d2e] text-left mb-12 leading-tight">
                             {currentQ.text}
                         </h2>
 
@@ -326,10 +332,10 @@ export default function PCOSScreener() {
                                     <button
                                         key={opt.label}
                                         onClick={() => handleAnswer(opt)}
-                                        className={`w-full p-4.5 rounded-2xl border-2 text-left transition-all duration-200 flex items-center justify-between group
+                                        className={`w-full p-5 rounded-2xl border-2 text-left transition-all duration-200 flex items-center justify-between group
                                         ${isSelected
-                                                ? "border-[#368241] bg-[#DCF5E6] text-[#1a4d2e]"
-                                                : "border-green-600/30 bg-white text-gray-700 hover:border-[#368241] hover:bg-green-50"
+                                                ? "border-[#48A359] bg-[#F1FAF3] text-[#1a4d2e]"
+                                                : "border-gray-100 bg-white text-gray-700 hover:border-[#48A359] hover:bg-[#F1FAF3]"
                                             }
                                     `}
                                     >
@@ -342,8 +348,6 @@ export default function PCOSScreener() {
                         </div>
                     </div>
                 </div>
-
-
             </div>
         )
     }

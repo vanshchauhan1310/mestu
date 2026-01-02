@@ -18,7 +18,7 @@ export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
     if (!visible) return null
 
     return (
-        <div className={`fixed inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`absolute inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
             <div className="relative w-48 h-48 animate-pulse">
                 <Image
                     src="/intro/intro.png"
