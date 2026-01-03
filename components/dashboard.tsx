@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Bell, User, Home, Heart, Calendar, Shield, ChevronRight, Leaf, Apple, Activity, CheckCircle2, Smile, Zap, Moon, ChevronDown, ChevronUp, Star, BookOpen, TrendingUp, Sparkles, Play, Plus, Flame, ArrowLeft, Utensils } from "lucide-react"
+import { Bell, User, Home, Heart, Calendar, Shield, ChevronRight, ChevronLeft, Info, Leaf, Apple, Activity, CheckCircle2, Smile, Zap, Moon, ChevronDown, ChevronUp, Star, BookOpen, TrendingUp, Sparkles, Play, Plus, Flame, ArrowLeft, Utensils } from "lucide-react"
 import HealTab from "./heal-tab"
+import TrackTab from "./track-tab"
 
 type DashboardProps = {
     riskData?: {
@@ -14,7 +15,42 @@ type DashboardProps = {
 
 export default function Dashboard({ riskData }: DashboardProps) {
     const [activeTab, setActiveTab] = useState<'cycle' | 'heal' | 'track' | 'analysis' | 'profile'>('cycle')
-    const [isCalendarCollapsed, setIsCalendarCollapsed] = useState(false)
+    const [currentStoryIndex, setCurrentStoryIndex] = useState(0)
+
+    const successStories = [
+        {
+            name: "Priya M., 28",
+            location: "Mumbai",
+            text: "After 3 months on the HEAL journey, my cycles became more regular and my symptoms reduced significantly. The personalized approach really works!",
+            image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop"
+        },
+        {
+            name: "Anjali S., 32",
+            location: "Bangalore",
+            text: "The combination of yoga, diet tracking, and daily routine monitoring helped me understand my body better. I feel more in control now.",
+            image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=200&auto=format&fit=crop"
+        },
+        {
+            name: "Riya K., 26",
+            location: "Delhi",
+            text: "Switching to reusable products and following the guided exercises made such a difference. I wish I had found this app sooner!",
+            image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=200&auto=format&fit=crop"
+        }
+    ]
+
+    const nextStory = () => {
+        setCurrentStoryIndex((prev) => (prev + 1) % successStories.length)
+    }
+
+    const prevStory = () => {
+        setCurrentStoryIndex((prev) => (prev - 1 + successStories.length) % successStories.length)
+    }
+
+    const learnItems = [
+        { title: "Understanding PCOS", time: "5 min", icon: "🔬" },
+        { title: "Yoga for PCOS", time: "7 min", icon: "🧘" },
+        { title: "PCOS-Friendly Diet", time: "10 min", icon: "🥗" }
+    ]
 
     // Default risk data if not provided (for dev/preview)
     const risk = riskData || {
@@ -62,114 +98,8 @@ export default function Dashboard({ riskData }: DashboardProps) {
                         <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/10"></div>
                     </div>
 
-                    {/* 2. Cycle Card */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-50 overflow-hidden">
-                        <div
-                            className="bg-[#48A359] p-6 text-white relative overflow-hidden cursor-pointer"
-                            onClick={() => setIsCalendarCollapsed(!isCalendarCollapsed)}
-                        >
-                            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
-
-                            <div className="flex justify-between items-start mb-6 relative z-10">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                                        <Calendar className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold">Your Cycle</h3>
-                                        <p className="text-green-100 text-xs">December 2024</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="text-right">
-                                        <div className="text-2xl font-bold">Day 15</div>
-                                        <p className="text-green-100 text-[10px]">of 28</p>
-                                    </div>
-                                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                                        {isCalendarCollapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-4 relative z-10">
-                                <div className="relative">
-                                    <div className="w-14 h-14 rounded-full border-4 border-white/10 flex items-center justify-center">
-                                        <div className="w-10 h-10 rounded-full bg-white text-[#48A359] flex items-center justify-center">
-                                            <Zap className="w-6 h-6" />
-                                        </div>
-                                    </div>
-                                    <svg className="absolute inset-0 w-14 h-14 -rotate-90" viewBox="0 0 100 100">
-                                        <circle
-                                            cx="50" cy="50" r="45"
-                                            fill="none"
-                                            stroke="white"
-                                            strokeWidth="8"
-                                            strokeDasharray="141"
-                                            strokeDashoffset="70"
-                                            strokeLinecap="round"
-                                            className="opacity-40"
-                                        />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-lg">Ovulation Phase</h4>
-                                    <p className="text-green-100 text-xs">Energy levels are rising, great time for activity</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Calendar Grid - Collapsible */}
-                        {!isCalendarCollapsed && (
-                            <div className="p-4 transition-all duration-300 ease-in-out">
-                                <div className="grid grid-cols-7 gap-1 mb-2 text-center">
-                                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                                        <div key={d} className="text-xs text-gray-300 font-bold">{d}</div>
-                                    ))}
-                                </div>
-                                <div className="grid grid-cols-7 gap-2 text-center text-sm font-medium">
-                                    {Array.from({ length: 31 }, (_, i) => i + 1).map(day => {
-                                        let bgClass = "bg-gray-50 text-gray-400"
-                                        if (day >= 1 && day <= 5) bgClass = "bg-red-300 text-white" // Menstrual
-                                        if (day >= 6 && day <= 12) bgClass = "bg-green-200 text-[#1a4d2e]" // Follicular
-                                        if (day >= 13 && day <= 16) bgClass = "bg-[#48A359] text-white" // Ovulation
-                                        if (day >= 17 && day <= 28) bgClass = "bg-green-100 text-[#1a4d2e]" // Luteal
-                                        if (day >= 29) bgClass = "bg-green-100 text-[#1a4d2e]" // Luteal cont.
-
-                                        const isToday = day === 15
-
-                                        return (
-                                            <div key={day} className={`aspect-square flex items-center justify-center rounded-xl text-[10px] ${bgClass} ${isToday ? 'ring-2 ring-[#48A359] ring-offset-2 font-bold' : ''}`}>
-                                                {day}
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-
-                                {/* Legend */}
-                                <div className="grid grid-cols-2 gap-2 mt-6">
-                                    <div className="flex items-center gap-2 bg-red-50/50 p-2 rounded-xl">
-                                        <div className="w-2 h-2 rounded-full bg-red-300"></div>
-                                        <span className="text-[10px] text-gray-500 font-medium">Menstrual</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-purple-50/50 p-2 rounded-xl">
-                                        <div className="w-2 h-2 rounded-full bg-purple-300"></div>
-                                        <span className="text-[10px] text-gray-500 font-medium">Follicular</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-green-50 p-2 rounded-xl">
-                                        <div className="w-2 h-2 rounded-full bg-[#48A359]"></div>
-                                        <span className="text-[10px] text-gray-500 font-medium">Ovulation</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-blue-50/50 p-2 rounded-xl">
-                                        <div className="w-2 h-2 rounded-full bg-blue-300"></div>
-                                        <span className="text-[10px] text-gray-500 font-medium">Luteal</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
                     {/* 3. Daily Check-in */}
-                    <div>
+                    {/* <div>
                         <div className="mb-4">
                             <h3 className="text-lg font-bold text-[#1a4d2e]">How are you feeling today?</h3>
                             <p className="text-xs text-gray-400">Based on Day 15 • Follicular Phase</p>
@@ -195,36 +125,70 @@ export default function Dashboard({ riskData }: DashboardProps) {
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* 4. Risk Score Card */}
-                    <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-50 p-6">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-16 h-16 rounded-2xl bg-[#c15824] flex items-center justify-center text-white shadow-lg shadow-orange-100">
-                                <Shield className="w-8 h-8" />
+                    <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-gray-50 p-8">
+                        <div className="flex items-center justify-between mb-8">
+                            <h3 className="text-xl font-bold text-[#1a4d2e]">PCOS Risk Assessment</h3>
+                            <Info className="w-5 h-5 text-gray-300" />
+                        </div>
+
+                        <div className="relative w-full max-w-[280px] mx-auto aspect-[2/1.2] mb-8">
+                            <svg viewBox="0 0 200 100" className="w-full h-full">
+                                {/* Background Arc */}
+                                <path
+                                    d="M 20,90 A 80,80 0 0 1 180,90"
+                                    fill="none"
+                                    stroke="#f3f4f6"
+                                    strokeWidth="12"
+                                    strokeLinecap="round"
+                                />
+                                {/* Low segment (Green) */}
+                                <path
+                                    d="M 20,90 A 80,80 0 0 1 70,35"
+                                    fill="none"
+                                    stroke="#48A359"
+                                    strokeWidth="12"
+                                    strokeLinecap="round"
+                                />
+                                {/* Medium segment (Orange) */}
+                                <path
+                                    d="M 70,35 A 80,80 0 0 1 130,35"
+                                    fill="none"
+                                    stroke="#c15824"
+                                    strokeWidth="12"
+                                    strokeLinecap="round"
+                                />
+                                {/* High segment (Red) */}
+                                <path
+                                    d="M 130,35 A 80,80 0 0 1 180,90"
+                                    fill="none"
+                                    stroke="#ef4444"
+                                    strokeWidth="12"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                            {/* Central Icon */}
+                            <div className="absolute top-[20%] left-1/2 -translate-x-1/2 flex flex-col items-center">
+                                <div className="w-16 h-16 rounded-full bg-[#c15824] flex items-center justify-center text-white shadow-lg border-4 border-white z-10">
+                                    <Shield className="w-7 h-7" />
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-[#1a4d2e]">Medium Risk</h3>
-                                <p className="text-xs text-gray-400">PCOS Risk Assessment</p>
+
+                            {/* Labels */}
+                            <div className="absolute bottom-2 left-0 right-0 flex justify-between px-4">
+                                <span className="text-[10px] font-bold text-[#48A359]">Low</span>
+                                <span className="text-[10px] font-bold text-[#c15824]">Medium</span>
+                                <span className="text-[10px] font-bold text-[#ef4444]">High</span>
                             </div>
                         </div>
 
-                        <div className="bg-orange-50/50 rounded-2xl p-4 mb-6">
-                            <p className="text-gray-600 leading-relaxed text-sm">
+                        <div className="text-center space-y-2">
+                            <h4 className="text-lg font-bold text-[#1a4d2e]">Medium Risk</h4>
+                            <p className="text-sm text-gray-500 max-w-[240px] mx-auto leading-relaxed">
                                 Consistency can bring meaningful improvement within months.
                             </p>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-                            <div className="flex items-center gap-3">
-                                <div className="text-[#48A359]">
-                                    <Activity className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p className="font-bold text-[#1a4d2e] text-sm">Track your progress</p>
-                                    <p className="text-[10px] text-gray-400">Monitor changes with daily habits</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -292,77 +256,62 @@ export default function Dashboard({ riskData }: DashboardProps) {
 
                     {/* Success Stories Section */}
                     <div>
-                        <div className="flex items-center justify-between mb-4 px-1">
-                            <h3 className="text-lg font-bold text-[#1a4d2e]">Success Stories</h3>
-                            <Heart className="w-5 h-5 text-pink-500" />
-                        </div>
-                        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-6 px-6">
-                            {[
-                                { name: "Priya M., 28", location: "Mumbai", text: "After 3 months on the HEAL journey, my cycles became more regular and my symptoms reduced significantly. The personalized approach really works!", icon: "🌸" },
-                                { name: "Anjali S., 32", location: "Bangalore", text: "The combination of yoga, diet tracking, and daily routine monitoring helped me understand my body better. I feel more in control now.", icon: "🌺" },
-                                { name: "Riya K., 26", location: "Delhi", text: "Switching to reusable products and following the guided exercises made such a difference. I wish I had found this app sooner!", icon: "🌻" }
-                            ].map((story, i) => (
-                                <div key={i} className="min-w-[300px] bg-white rounded-3xl p-6 shadow-sm border border-gray-50 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-20 h-20 bg-pink-50 rounded-full -mr-10 -mt-10 blur-2xl"></div>
-                                    <div className="text-purple-400 mb-4">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V12C14.017 12.5523 13.5693 13 13.017 13H11.017C10.4647 13 10.017 12.5523 10.017 12V9C10.017 7.34315 11.3601 6 13.017 6H19.017C20.6738 6 22.017 7.34315 22.017 9V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM3.017 21L3.017 18C3.017 16.8954 3.91244 16 5.017 16H8.017C8.56928 16 9.017 15.5523 9.017 15V9C9.017 8.44772 8.56928 8 8.017 8H4.017C3.46472 8 3.017 8.44772 3.017 9V12C3.017 12.5523 2.56928 13 2.017 13H0.017C-0.535282 13 -1.017 12.5523 -1.017 12V9C-1.017 7.34315 0.326142 6 2.017 6H8.017C9.67386 6 11.017 7.34315 11.017 9V15C11.017 18.3137 8.33071 21 5.017 21H3.017Z" />
-                                        </svg>
-                                    </div>
-                                    <p className="text-gray-600 text-sm italic mb-6 leading-relaxed">"{story.text}"</p>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-xl shadow-inner">
-                                                {story.icon}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-[#1a4d2e] text-xs">{story.name}</h4>
-                                                <p className="text-[10px] text-gray-400">{story.location}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-0.5">
-                                            {[1, 2, 3, 4, 5].map(star => (
-                                                <Star key={star} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                            ))}
-                                        </div>
-                                    </div>
+                        <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-50 flex flex-col items-center text-center relative min-h-[400px]">
+                            <div className="w-20 h-20 rounded-full border-2 border-[#48A359] p-1 mb-6 transition-all duration-500">
+                                <img
+                                    src={successStories[currentStoryIndex].image}
+                                    alt="User"
+                                    className="w-full h-full rounded-full object-cover"
+                                />
+                            </div>
+                            <p className="text-gray-600 text-sm italic mb-4 leading-relaxed max-w-[280px] min-h-[80px] transition-all duration-500">
+                                "{successStories[currentStoryIndex].text}"
+                            </p>
+                            <div className="flex gap-1 mb-4">
+                                {[1, 2, 3, 4, 5].map(star => (
+                                    <Star key={star} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                ))}
+                            </div>
+                            <h4 className="font-bold text-[#1a4d2e] text-base mb-0.5 transition-all duration-500">{successStories[currentStoryIndex].name}</h4>
+                            <p className="text-xs text-gray-400 mb-8 transition-all duration-500">{successStories[currentStoryIndex].location}</p>
+
+                            <div className="flex items-center justify-between w-full mt-auto">
+                                <button
+                                    onClick={prevStory}
+                                    className="text-[#48A359] hover:scale-110 transition-transform p-2"
+                                >
+                                    <ChevronLeft className="w-6 h-6" />
+                                </button>
+                                <div className="flex gap-2">
+                                    {successStories.map((_, i) => (
+                                        <div
+                                            key={i}
+                                            className={`transition-all duration-300 ${i === currentStoryIndex ? 'w-6 h-2 bg-[#48A359]' : 'w-2 h-2 bg-gray-200'} rounded-full`}
+                                        ></div>
+                                    ))}
                                 </div>
-                            ))}
+                                <button
+                                    onClick={nextStory}
+                                    className="text-[#48A359] hover:scale-110 transition-transform p-2"
+                                >
+                                    <ChevronRight className="w-6 h-6" />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     {/* Learn & Explore Section */}
                     <div>
-                        <div className="flex items-center justify-between mb-4 px-1">
-                            <div className="flex items-center gap-2">
-                                <BookOpen className="w-5 h-5 text-purple-500" />
-                                <h3 className="text-lg font-bold text-[#1a4d2e]">Learn & Explore</h3>
-                            </div>
-                            <TrendingUp className="w-5 h-5 text-[#48A359]" />
+                        <div className="flex items-center gap-2 mb-4 px-1">
+                            <BookOpen className="w-5 h-5 text-[#722062]" />
+                            <h3 className="text-lg font-bold text-[#1a4d2e]">Learn & Explore</h3>
                         </div>
-                        <div className="space-y-3">
-                            {[
-                                { title: "Understanding PCOS: Causes and Symptoms", category: "BASICS", time: "5 min read", icon: "🔬", color: "bg-purple-100 text-purple-600", border: "border-l-purple-500" },
-                                { title: "How Yoga Helps Manage PCOS Naturally", category: "EXERCISE", time: "7 min read", icon: "🧘", color: "bg-pink-100 text-pink-600", border: "border-l-pink-500" },
-                                { title: "PCOS-Friendly Diet: What to Eat and Avoid", category: "NUTRITION", time: "10 min read", icon: "🥗", color: "bg-green-100 text-green-600", border: "border-l-green-500" },
-                                { title: "Benefits of Reusable Menstrual Products", category: "WELLNESS", time: "4 min read", icon: "🌿", color: "bg-teal-100 text-teal-600", border: "border-l-teal-500" },
-                                { title: "Sleep and Stress: Impact on Hormonal Balance", category: "LIFESTYLE", time: "6 min read", icon: "😴", color: "bg-blue-100 text-blue-600", border: "border-l-blue-500" }
-                            ].map((item, i) => (
-                                <div key={i} className={`bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-50 border-l-4 ${item.border} hover:bg-gray-50 transition-colors cursor-pointer group`}>
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 rounded-xl ${item.color} flex items-center justify-center text-2xl shadow-sm`}>
-                                            {item.icon}
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] font-bold tracking-wider mb-0.5 opacity-80">{item.category}</p>
-                                            <h4 className="font-bold text-[#1a4d2e] text-sm leading-tight group-hover:text-[#48A359] transition-colors">{item.title}</h4>
-                                            <div className="flex items-center gap-1 mt-1">
-                                                <Moon className="w-3 h-3 text-gray-300" />
-                                                <p className="text-[10px] text-gray-400">{item.time}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-[#1a4d2e] transition-colors" />
+                        <div className="grid grid-cols-3 gap-2">
+                            {learnItems.map((item, i) => (
+                                <div key={i} className="bg-white p-4 rounded-2xl flex flex-col items-center text-center shadow-sm border border-gray-50 hover:border-[#48A359]/30 transition-all cursor-pointer">
+                                    <div className="text-2xl mb-3">{item.icon}</div>
+                                    <h4 className="font-bold text-[#1a4d2e] text-[10px] mb-1 leading-tight">{item.title}</h4>
+                                    <p className="text-[8px] text-gray-400">{item.time}</p>
                                 </div>
                             ))}
                         </div>
@@ -375,10 +324,13 @@ export default function Dashboard({ riskData }: DashboardProps) {
             return <HealTab />
         }
 
+        if (activeTab === 'track') {
+            return <TrackTab />
+        }
+
         return (
             <div className="flex flex-col items-center justify-center h-[60vh] text-center p-8">
                 <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                    {activeTab === 'track' && <Plus className="w-10 h-10 text-gray-400" />}
                     {activeTab === 'analysis' && <TrendingUp className="w-10 h-10 text-gray-400" />}
                     {activeTab === 'profile' && <User className="w-10 h-10 text-gray-400" />}
                 </div>
