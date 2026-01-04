@@ -44,25 +44,19 @@ export default function IntroCarousel({ onFinish }: { onFinish: () => void }) {
     const slide = SLIDES[currentSlide]
 
     return (
-        <div className="flex-1 bg-white flex flex-col items-center p-6 pt-12 transition-colors duration-500">
+        <div className="flex-1 bg-white flex flex-col items-center p-6 pt-8 pb-8 transition-colors duration-500 min-h-full overflow-y-auto">
             {/* Image Section */}
-            <div className="relative w-full aspect-square mb-10 rounded-[3rem] overflow-hidden shadow-xl transition-all duration-500">
+            <div className="relative w-full aspect-square mb-6 rounded-[2.5rem] overflow-hidden shadow-xl transition-all duration-500 shrink-0">
                 <div
                     className="absolute inset-0 bg-cover bg-center transition-all duration-500 ease-out"
                     style={{ backgroundImage: `url(${slide.image})` }}
                 />
-                {/* Subtle sparkle icon in corner like in image */}
-                <div className="absolute bottom-4 right-4 text-white/50">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-                    </svg>
-                </div>
             </div>
 
             {/* CONTENT SECTION */}
-            <div className="flex-1 flex flex-col items-center text-center w-full">
+            <div className="flex-1 flex flex-col items-center text-center w-full min-h-0">
                 {/* Title */}
-                <h2 className="text-3xl font-serif font-bold text-[#1a4d2e] mb-2 tracking-tight">
+                <h2 className="text-3xl font-serif font-bold text-[#1a4d2e] mb-2 tracking-tight mt-4">
                     {slide.title}
                     <span className="text-[#48A359]">
                         {slide.highlight}
@@ -70,12 +64,12 @@ export default function IntroCarousel({ onFinish }: { onFinish: () => void }) {
                 </h2>
 
                 {/* Text */}
-                <p className="text-gray-500 text-sm leading-relaxed mb-10 max-w-[90%]">
+                <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-[90%]">
                     {slide.text}
                 </p>
 
                 {/* Dots Indicator */}
-                <div className="flex gap-2 mb-10">
+                <div className="flex gap-2 mb-6 mt-auto">
                     {SLIDES.map((_, idx) => (
                         <div
                             key={idx}
@@ -87,7 +81,7 @@ export default function IntroCarousel({ onFinish }: { onFinish: () => void }) {
                 {/* Button */}
                 <button
                     onClick={handleNext}
-                    className="w-full bg-[#48A359] text-white py-4 rounded-full font-bold text-lg shadow-lg shadow-green-200 hover:bg-[#3d8b4b] transition-all flex items-center justify-center gap-2 group mt-auto mb-4"
+                    className="w-full bg-[#48A359] text-white py-4 rounded-full font-bold text-lg shadow-lg shadow-green-200 hover:bg-[#3d8b4b] transition-all flex items-center justify-center gap-2 group mb-2 active:scale-95"
                 >
                     {slide.button}
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
