@@ -10,9 +10,10 @@ import ProfileTab from "./profile-tab"
 
 type DashboardProps = {
     riskData?: {
-        riskCategory: string
-        totalScore: number
-        action: string
+        riskCategory?: string
+        pcosRisk?: string
+        totalScore?: number
+        action?: string
     }
 }
 
@@ -56,15 +57,17 @@ export default function Dashboard({ riskData }: DashboardProps) {
     ]
 
     // Default risk data if not provided (for dev/preview)
-    const risk = riskData || {
-        riskCategory: "Medium Risk",
-        totalScore: 15,
-        action: "3-month HEAL guided journey"
+    // Handle both Firestore data (pcosRisk) and local screener data (riskCategory)
+    const risk = {
+        riskCategory: riskData?.riskCategory || riskData?.pcosRisk || "Medium Risk",
+        totalScore: riskData?.totalScore || 15,
+        action: riskData?.action || "3-month HEAL guided journey"
     }
 
     // Map risk category to colors/styles
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const getRiskStyles = (category: string) => {
+        if (!category) return { bg: "bg-green-500", text: "text-green-50", label: "Low Risk" }
         if (category.includes("High")) return { bg: "bg-red-500", text: "text-red-50", label: "High Risk" }
         if (category.includes("Moderate") || category.includes("Medium")) return { bg: "bg-orange-500", text: "text-orange-50", label: "Medium Risk" }
         return { bg: "bg-green-500", text: "text-green-50", label: "Low Risk" }
