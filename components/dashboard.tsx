@@ -1,9 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Bell, User, Home, Heart, Calendar, Shield, ChevronRight, ChevronLeft, Info, Leaf, Apple, Activity, CheckCircle2, Smile, Zap, Moon, ChevronDown, ChevronUp, Star, BookOpen, TrendingUp, Sparkles, Play, Plus, Flame, ArrowLeft, Utensils } from "lucide-react"
+import { Bell, User, Home, Heart, Shield, ChevronRight, ChevronLeft, Info, Leaf, Apple, Activity, CheckCircle2, Star, BookOpen, Sparkles, Plus, Users, Stethoscope } from "lucide-react"
 import HealTab from "./heal-tab"
 import TrackTab from "./track-tab"
+import CommunityTab from "./community-tab"
+import ConsultTab from "./consult-tab"
+import ProfileTab from "./profile-tab"
 
 type DashboardProps = {
     riskData?: {
@@ -14,7 +17,7 @@ type DashboardProps = {
 }
 
 export default function Dashboard({ riskData }: DashboardProps) {
-    const [activeTab, setActiveTab] = useState<'cycle' | 'heal' | 'track' | 'analysis' | 'profile'>('cycle')
+    const [activeTab, setActiveTab] = useState<'cycle' | 'heal' | 'track' | 'community' | 'consult' | 'profile'>('cycle')
     const [currentStoryIndex, setCurrentStoryIndex] = useState(0)
 
     const successStories = [
@@ -60,12 +63,14 @@ export default function Dashboard({ riskData }: DashboardProps) {
     }
 
     // Map risk category to colors/styles
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const getRiskStyles = (category: string) => {
         if (category.includes("High")) return { bg: "bg-red-500", text: "text-red-50", label: "High Risk" }
         if (category.includes("Moderate") || category.includes("Medium")) return { bg: "bg-orange-500", text: "text-orange-50", label: "Medium Risk" }
         return { bg: "bg-green-500", text: "text-green-50", label: "Low Risk" }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const riskStyle = getRiskStyles(risk.riskCategory)
 
     const renderContent = () => {
@@ -97,35 +102,6 @@ export default function Dashboard({ riskData }: DashboardProps) {
                         {/* Subtle decorative circle */}
                         <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/10"></div>
                     </div>
-
-                    {/* 3. Daily Check-in */}
-                    {/* <div>
-                        <div className="mb-4">
-                            <h3 className="text-lg font-bold text-[#1a4d2e]">How are you feeling today?</h3>
-                            <p className="text-xs text-gray-400">Based on Day 15 • Follicular Phase</p>
-                        </div>
-
-                        <div className="space-y-3">
-                            {[
-                                { icon: Smile, color: "text-[#48A359]", bg: "bg-green-50", label: "Positive mood", sub: "Likelihood: High" },
-                                { icon: Zap, color: "text-amber-500", bg: "bg-amber-50", label: "High energy", sub: "Likelihood: High" },
-                                { icon: Activity, color: "text-blue-500", bg: "bg-blue-50", label: "Increased focus", sub: "Likelihood: Medium" },
-                            ].map((item, i) => (
-                                <div key={i} className="bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-50">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 rounded-full ${item.bg} flex items-center justify-center ${item.color}`}>
-                                            <item.icon className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-[#1a4d2e] text-sm">{item.label}</h4>
-                                            <p className="text-xs text-gray-400">{item.sub}</p>
-                                        </div>
-                                    </div>
-                                    <div className="w-6 h-6 rounded-full border-2 border-gray-100"></div>
-                                </div>
-                            ))}
-                        </div>
-                    </div> */}
 
                     {/* 4. Risk Score Card */}
                     <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-gray-50 p-8">
@@ -328,16 +304,19 @@ export default function Dashboard({ riskData }: DashboardProps) {
             return <TrackTab />
         }
 
-        return (
-            <div className="flex flex-col items-center justify-center h-[60vh] text-center p-8">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                    {activeTab === 'analysis' && <TrendingUp className="w-10 h-10 text-gray-400" />}
-                    {activeTab === 'profile' && <User className="w-10 h-10 text-gray-400" />}
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Coming Soon</h2>
-                <p className="text-gray-500">This feature is currently under development.</p>
-            </div>
-        )
+        if (activeTab === 'community') {
+            return <CommunityTab />
+        }
+
+        if (activeTab === 'consult') {
+            return <ConsultTab />
+        }
+
+        if (activeTab === 'profile') {
+            return <ProfileTab />
+        }
+
+        return <div />
     }
 
     return (
@@ -358,7 +337,10 @@ export default function Dashboard({ riskData }: DashboardProps) {
                         <Bell className="w-5 h-5" />
                         <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
-                    <button className="text-gray-400 hover:text-[#1a4d2e] transition-colors">
+                    <button
+                        onClick={() => setActiveTab('profile')}
+                        className={`text-gray-400 hover:text-[#1a4d2e] transition-colors p-1 rounded-full hover:bg-gray-100 ${activeTab === 'profile' ? 'text-[#1a4d2e] bg-green-50' : ''}`}
+                    >
                         <User className="w-5 h-5" />
                     </button>
                 </div>
@@ -398,19 +380,19 @@ export default function Dashboard({ riskData }: DashboardProps) {
                 </button>
 
                 <button
-                    onClick={() => setActiveTab('analysis')}
-                    className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'analysis' ? 'text-[#48A359]' : 'text-gray-300 hover:text-gray-400'}`}
+                    onClick={() => setActiveTab('community')}
+                    className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'community' ? 'text-[#48A359]' : 'text-gray-300 hover:text-gray-400'}`}
                 >
-                    <TrendingUp className="w-6 h-6" />
-                    <span className="text-[10px] font-bold">Analysis</span>
+                    <Users className="w-6 h-6" />
+                    <span className="text-[10px] font-bold">Community</span>
                 </button>
 
                 <button
-                    onClick={() => setActiveTab('profile')}
-                    className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'profile' ? 'text-[#48A359]' : 'text-gray-300 hover:text-gray-400'}`}
+                    onClick={() => setActiveTab('consult')}
+                    className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'consult' ? 'text-[#48A359]' : 'text-gray-300 hover:text-gray-400'}`}
                 >
-                    <User className="w-6 h-6" />
-                    <span className="text-[10px] font-bold">Profile</span>
+                    <Stethoscope className="w-6 h-6" />
+                    <span className="text-[10px] font-bold">Consult</span>
                 </button>
             </div>
         </div>

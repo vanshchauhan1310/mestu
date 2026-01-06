@@ -1,10 +1,9 @@
-"use client"
-
 import { useState, useMemo } from "react"
 import { ArrowLeft, CheckCircle, Info, Stethoscope, AlertTriangle, ArrowRight } from "lucide-react"
 import { doc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "./auth-context"
+import { CalendarStep, BMIStep, UserDetailsStep } from "./screener-steps"
 
 // --- TYPES ---
 type Option = { label: string; score: number }
@@ -22,6 +21,12 @@ type Section = {
     questions: Question[];
     maxScore: number;
 }
+
+type Step =
+    | { type: 'user_details', id: 'user_details' }
+    | { type: 'question', id: string, data: Question }
+    | { type: 'calendar', id: 'calendar' }
+    | { type: 'bmi', id: 'bmi' }
 
 // --- DATA ---
 const SECTIONS: Section[] = [
@@ -165,38 +170,73 @@ const SECTIONS: Section[] = [
 export default function PCOSScreener({ onComplete }: { onComplete?: (results: any) => void }) {
     const { user } = useAuth()
 
-    // Flatten questions
-    const allQuestions = useMemo(() => {
-        return SECTIONS.flatMap(section =>
-            section.questions.map(q => ({
-                ...q,
-                sectionId: section.id,
-                sectionTitle: section.title
-            }))
-        )
+    // Flatten questions and inject custom steps
+    const steps: Step[] = useMemo(() => {
+        const list: Step[] = []
+        // Add User Details Step first
+        list.push({ type: 'user_details', id: 'user_details' })
+
+        SECTIONS.forEach(section => {
+            section.questions.forEach(q => {
+                list.push({
+                    type: 'question',
+                    id: q.id,
+                    data: {
+                        ...q,
+                        sectionId: section.id,
+                        sectionTitle: section.title
+                    }
+                })
+                // Inject Calendar after Q3
+                if (q.id === 'Q3') {
+                    list.push({ type: 'calendar', id: 'calendar' })
+                }
+                // Inject BMI after Q7
+                if (q.id === 'Q7') {
+                    list.push({ type: 'bmi', id: 'bmi' })
+                }
+            })
+        })
+        return list
     }, [])
 
     const [viewState, setViewState] = useState<'intro' | 'questions' | 'results'>('intro')
-    const [currentQIndex, setCurrentQIndex] = useState(0)
-    const [answers, setAnswers] = useState<Record<string, { label: string, score: number }>>({})
+    const [currentStepIndex, setCurrentStepIndex] = useState(0)
+    const [answers, setAnswers] = useState<Record<string, any>>({})
     const [saving, setSaving] = useState(false)
     const [animating, setAnimating] = useState(false)
 
+    // Handle standard question answer
     const handleAnswer = (option: Option) => {
         if (animating) return
+        const currentStep = steps[currentStepIndex]
+        if (currentStep.type !== 'question') return
 
-        setAnswers(prev => ({ ...prev, [allQuestions[currentQIndex].id]: option }))
+        setAnswers(prev => ({ ...prev, [currentStep.id]: option }))
 
         // Auto advance
         setAnimating(true)
         setTimeout(() => {
-            if (currentQIndex < allQuestions.length - 1) {
-                setCurrentQIndex(prev => prev + 1)
+            if (currentStepIndex < steps.length - 1) {
+                setCurrentStepIndex(prev => prev + 1)
                 setAnimating(false)
             } else {
                 finishAssessment()
             }
         }, 250)
+    }
+
+    // Handle custom step data (Calendar / BMI / UserDetails)
+    const handleStepData = (data: any) => {
+        const currentStep = steps[currentStepIndex]
+        setAnswers(prev => ({ ...prev, [currentStep.id]: data }))
+
+        // Advance immediately (no animation delay needed usually as button triggered)
+        if (currentStepIndex < steps.length - 1) {
+            setCurrentStepIndex(prev => prev + 1)
+        } else {
+            finishAssessment()
+        }
     }
 
     const finishAssessment = async () => {
@@ -206,15 +246,19 @@ export default function PCOSScreener({ onComplete }: { onComplete?: (results: an
             // Save to Firebase
             try {
                 const screeningId = `pcos_${Date.now()}`
+                const userDetails = answers['user_details'] || {}
+
                 await setDoc(doc(db, "users", user.uid, "screenings", screeningId), {
                     completedAt: new Date().toISOString(),
                     answers,
                     results,
-                    version: "1.0"
+                    version: "1.1"
                 })
                 await setDoc(doc(db, "users", user.uid), {
                     pcosRisk: results.riskCategory,
-                    lastScreening: new Date().toISOString()
+                    lastScreening: new Date().toISOString(),
+                    name: userDetails.name || null,
+                    dateOfBirth: userDetails.dob || null
                 }, { merge: true })
             } catch (e) {
                 console.error(e)
@@ -233,10 +277,15 @@ export default function PCOSScreener({ onComplete }: { onComplete?: (results: an
         let totalScore = 0
         let sectionScores: Record<string, number> = {}
 
+        // Only sum up Question scores
         SECTIONS.forEach(sec => {
             let secScore = 0
             sec.questions.forEach(q => {
-                secScore += (answers[q.id]?.score || 0)
+                const ans = answers[q.id]
+                // Check if it has a score (it's a question answer)
+                if (ans && typeof ans.score === 'number') {
+                    secScore += ans.score
+                }
             })
             sectionScores[sec.id] = secScore
             totalScore += secScore
@@ -253,7 +302,7 @@ export default function PCOSScreener({ onComplete }: { onComplete?: (results: an
             action = "3-month HEAL guided journey"
         }
 
-        return { totalScore, sectionScores, riskCategory, action }
+        return { totalScore, sectionScores, riskCategory, action, bmi: answers['bmi'], cycles: answers['calendar'] }
     }
 
     // --- VIEWS ---
@@ -266,7 +315,7 @@ export default function PCOSScreener({ onComplete }: { onComplete?: (results: an
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">PCOS Risk Screener</h1>
                 <p className="text-gray-500 mb-8 leading-relaxed">
-                    Answer 11 quick questions to understand your menstrual health profile.
+                    Answer a few questions to understand your menstrual health profile.
                 </p>
 
                 <div className="bg-amber-50 p-4 rounded-xl text-left flex gap-3 border border-amber-100 mb-8">
@@ -287,24 +336,24 @@ export default function PCOSScreener({ onComplete }: { onComplete?: (results: an
     }
 
     if (viewState === 'questions') {
-        const currentQ = allQuestions[currentQIndex]
-        const percent = ((currentQIndex + 1) / allQuestions.length) * 100
+        const currentStep = steps[currentStepIndex]
+        const percent = ((currentStepIndex + 1) / steps.length) * 100
 
         return (
-            <div className="flex-1 bg-white flex flex-col">
+            <div className="flex-1 bg-white flex flex-col h-full overflow-hidden">
                 {/* Header / Progress */}
-                <div className="pt-8 pb-4 px-6 bg-white sticky top-0 z-10">
+                <div className="pt-8 pb-4 px-6 bg-white shrink-0 z-10">
                     <div className="relative flex items-center justify-center mb-6">
                         <button
-                            onClick={() => currentQIndex > 0 ? setCurrentQIndex(i => i - 1) : setViewState('intro')}
+                            onClick={() => currentStepIndex > 0 ? setCurrentStepIndex(i => i - 1) : setViewState('intro')}
                             className="absolute left-0 p-2 -ml-2 text-gray-400 hover:text-gray-900 transition-colors"
                         >
                             <ArrowLeft className="w-6 h-6" />
                         </button>
                         <div className="flex items-center gap-1">
-                            <span className="text-[#48A359] font-bold text-lg">{currentQIndex + 1}</span>
+                            <span className="text-[#48A359] font-bold text-lg">{currentStepIndex + 1}</span>
                             <span className="text-gray-300 text-sm">/</span>
-                            <span className="text-[#48A359] font-bold text-lg">{allQuestions.length}</span>
+                            <span className="text-[#48A359] font-bold text-lg">{steps.length}</span>
                         </div>
                     </div>
 
@@ -317,36 +366,61 @@ export default function PCOSScreener({ onComplete }: { onComplete?: (results: an
                     </div>
                 </div>
 
-                {/* Question Card */}
-                <div className="flex-1 px-6 py-8 flex flex-col w-full">
-                    <div className={`transition-all duration-300 ${animating ? 'opacity-0 translate-x-4' : 'opacity-100'}`}>
-
-                        <h2 className="text-2xl font-bold text-[#1a4d2e] text-left mb-12 leading-tight">
-                            {currentQ.text}
-                        </h2>
-
-                        <div className="space-y-4">
-                            {currentQ.options.map(opt => {
-                                const isSelected = answers[currentQ.id]?.label === opt.label
-                                return (
-                                    <button
-                                        key={opt.label}
-                                        onClick={() => handleAnswer(opt)}
-                                        className={`w-full p-5 rounded-2xl border-2 text-left transition-all duration-200 flex items-center justify-between group
-                                        ${isSelected
-                                                ? "border-[#48A359] bg-[#F1FAF3] text-[#1a4d2e]"
-                                                : "border-gray-100 bg-white text-gray-700 hover:border-[#48A359] hover:bg-[#F1FAF3]"
-                                            }
-                                    `}
-                                    >
-                                        <span className="font-medium text-base">
-                                            {opt.label}
-                                        </span>
-                                    </button>
-                                )
-                            })}
+                {/* Step Content */}
+                <div className="flex-1 w-full min-h-0 relative">
+                    {/* User Details Step */}
+                    {currentStep.type === 'user_details' && (
+                        <div className="h-full w-full">
+                            <UserDetailsStep onNext={handleStepData} />
                         </div>
-                    </div>
+                    )}
+
+                    {/* Standard Question */}
+                    {currentStep.type === 'question' && (
+                        <div className="h-full overflow-y-auto px-6 py-8">
+                            <div className={`transition-all duration-300 ${animating ? 'opacity-0 translate-x-4' : 'opacity-100'}`}>
+                                <h2 className="text-2xl font-bold text-[#1a4d2e] text-left mb-12 leading-tight">
+                                    {currentStep.data.text}
+                                </h2>
+
+                                <div className="space-y-4">
+                                    {currentStep.data.options.map(opt => {
+                                        const isSelected = answers[currentStep.id]?.label === opt.label
+                                        return (
+                                            <button
+                                                key={opt.label}
+                                                onClick={() => handleAnswer(opt)}
+                                                className={`w-full p-5 rounded-2xl border-2 text-left transition-all duration-200 flex items-center justify-between group
+                                                ${isSelected
+                                                        ? "border-[#48A359] bg-[#F1FAF3] text-[#1a4d2e]"
+                                                        : "border-gray-100 bg-white text-gray-700 hover:border-[#48A359] hover:bg-[#F1FAF3]"
+                                                    }
+                                            `}
+                                            >
+                                                <span className="font-medium text-base">
+                                                    {opt.label}
+                                                </span>
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Calendar Step */}
+                    {currentStep.type === 'calendar' && (
+                        <div className="h-full w-full">
+                            <CalendarStep onNext={handleStepData} />
+                        </div>
+                    )}
+
+                    {/* BMI Step */}
+                    {currentStep.type === 'bmi' && (
+                        <div className="h-full w-full">
+                            <BMIStep onNext={handleStepData} />
+                        </div>
+                    )}
                 </div>
             </div>
         )
@@ -358,7 +432,7 @@ export default function PCOSScreener({ onComplete }: { onComplete?: (results: an
         if (riskCategory.includes("Moderate")) color = "bg-orange-100 text-orange-800"
         if (riskCategory.includes("High")) color = "bg-red-100 text-red-800"
 
-        if (saving) return <div className="min-h-screen flex items-center justify-center">Saving...</div>
+        if (saving) return <div className="min-h-screen flex items-center justify-center text-[#48A359] font-bold">Saving Result...</div>
 
         return (
             <div className="max-w-md mx-auto p-6 mt-8 bg-white rounded-3xl shadow-sm border border-gray-100 text-center">

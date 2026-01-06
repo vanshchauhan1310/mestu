@@ -2,6 +2,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,6 +17,7 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // Initialize App Check (for Real Phone Auth on Localhost)
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
@@ -41,4 +43,4 @@ if (typeof window !== "undefined") {
     }
 }
 
-export { app, auth, db };
+export { app, auth, db, storage };

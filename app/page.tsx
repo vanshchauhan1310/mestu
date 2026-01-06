@@ -10,7 +10,7 @@ import Dashboard from "@/components/dashboard"
 import { auth } from "@/lib/firebase"
 
 export default function Page() {
-  const { user, loading } = useAuth()
+  const { user, userData, loading } = useAuth()
   const router = useRouter()
   // detailed check: if user is logged in, skip splash/intro
   const [appState, setAppState] = useState<'splash' | 'intro' | 'app'>('splash')
@@ -31,6 +31,14 @@ export default function Page() {
     }
   }, [user, loading, appState, router])
 
+  // 3. Check for existing risk data to skip screener
+  useEffect(() => {
+    if (user && userData?.pcosRisk) {
+      setRiskData(userData)
+      setView('dashboard')
+    }
+  }, [user, userData])
+
   if (loading) {
     return <div className="flex-1 flex items-center justify-center bg-white text-[#48A359] font-medium">Loading HEAL...</div>
   }
@@ -50,9 +58,6 @@ export default function Page() {
 
   // Authenticated Area
 
-  // Check if user already has risk data (optional, but good for UX)
-  // For now, we'll start with screener as requested, but if we had the data we could skip it.
-
   const handleScreenerComplete = (results: any) => {
     setRiskData(results)
     setView('dashboard')
@@ -64,8 +69,8 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 p-4">
+    <div className="h-full bg-gray-50 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden">
         <PCOSScreener onComplete={handleScreenerComplete} />
       </main>
     </div>
